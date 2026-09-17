@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Practice Your Script | Stance Speak</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f7f7f5;
+      color: #222;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 25px 20px 60px;
+    }
+
+    .back-home {
+      display: inline-block;
+      margin-bottom: 25px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      background: #222;
+      color: white;
+      text-decoration: none;
+      font-size: 15px;
+    }
+
+    .back-home:hover {
+      opacity: 0.8;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 38px;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: #666;
+      font-size: 18px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 230px;
+      padding: 15px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-family: Arial, sans-serif;
+      font-size: 18px;
+      line-height: 1.6;
+      resize: vertical;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #777;
+    }
+
+    button {
+      border: none;
+      background: #222;
+      color: white;
+      cursor: pointer;
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      padding: 11px 18px;
+      border-radius: 8px;
+    }
+
+    button:hover {
+      opacity: 0.8;
+    }
+
+    button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .secondary {
+      background: #666;
+    }
+
+    .danger {
+      background: #8a3030;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .saved-message {
+      margin-top: 12px;
+      color: #555;
+      font-size: 15px;
+    }
+
+    #practiceArea {
+      display: none;
+    }
+
+    .level-title {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+
+    .instructions {
+      margin: 0 0 25px;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    .question {
+      padding: 20px;
+      margin-bottom: 16px;
+      border: 2px solid #e2e2e2;
+      border-radius: 12px;
+    }
+
+    .question-number {
+      font-weight: bold;
+      margin-bottom: 12px;
+      color: #555;
+    }
+
+    .sentence {
+      font-size: 21px;
+      line-height: 1.8;
+      margin-bottom: 18px;
+    }
+
+    .blank {
+      display: inline-block;
+      min-width: 100px;
+      border-bottom: 3px solid #222;
+      text-align: center;
+      font-weight: bold;
+      margin: 0 4px;
+    }
+
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .choice {
+      background: white;
+      color: #222;
+      border: 2px solid #ccc;
+      text-align: left;
+    }
+
+    .choice:hover {
+      background: #f2f2f2;
+    }
+
+    .choice.correct {
+      border-color: #222;
+      background: #e8e8e8;
+    }
+
+    .choice.incorrect {
+      border-color: #999;
+      background: #f1f1f1;
+    }
+
+    .choice:disabled {
+      opacity: 1;
+      cursor: default;
+    }
+
+    .feedback {
+      margin-top: 12px;
+      font-weight: bold;
+      min-height: 20px;
+    }
+
+    .progress-box {
+      background: #f1f1f1;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    .script-preview {
+      background: #fafafa;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 15px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 650px) {
+      h1 {
+        font-size: 30px;
+      }
+
+      .choices {
+        grid-template-columns: 1fr;
+      }
+
+      .sentence {
+        font-size: 19px;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <a href="index.html" class="back-home">
+      ← BACK TO HOME
+    </a>
+
+    <header>
+      <h1>PRACTICE YOUR SCRIPT</h1>
+      <p class="subtitle">
+        Practice your script step by step and build your memory.
+      </p>
+    </header>
+
+
+    <!-- SCRIPT INPUT -->
+
+    <div class="card" id="scriptCard">
+
+      <label for="scriptInput">
+        PASTE YOUR SCRIPT
+      </label>
+
+      <textarea
+        id="scriptInput"
+        placeholder="Paste your script here..."
+      ></textarea>
+
+      <div class="button-row">
+
+        <button id="generateButton">
+          GENERATE PRACTICE
+        </button>
+
+        <button
+          id="continueButton"
+          class="secondary"
+          type="button"
+        >
+          CONTINUE SAVED PRACTICE
+        </button>
+
+      </div>
+
+      <div
+        id="savedMessage"
+        class="saved-message"
+      ></div>
+
+    </div>
+
+
+    <!-- PRACTICE -->
+
+    <div class="card" id="practiceArea">
+
+      <h2 class="level-title">
+        LEVEL 1 — FILL IN THE BLANKS
+      </h2>
+
+      <p class="instructions">
+        Choose the word that belongs in each blank.
+        Read the complete sentence after answering.
+      </p>
+
+      <div
+        id="progressBox"
+        class="progress-box"
+      ></div>
+
+      <div id="questions"></div>
+
+      <div class="button-row">
+
+        <button
+          id="saveButton"
+          type="button"
+        >
+          SAVE PROGRESS
+        </button>
+
+        <button
+          id="restartButton"
+          class="secondary"
+          type="button"
+        >
+          START OVER
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- SCRIPT PREVIEW -->
+
+    <div
+      class="card hidden"
+      id="scriptPreviewCard"
+    >
+
+      <h2>Your Script</h2>
+
+      <div
+        id="scriptPreview"
+        class="script-preview"
+      ></div>
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+    /*
+      =====================================================
+      PRACTICE YOUR SCRIPT
+      =====================================================
+
+      Everything runs in the browser.
+
+      No external libraries.
+      No paid services.
+      No API.
+      No database.
+
+      Saved progress uses localStorage.
+    */
+
+
+    const STORAGE_KEY =
+      "stanceSpeakPracticeProgress";
+
+
+    const scriptInput =
+      document.getElementById("scriptInput");
+
+    const generateButton =
+      document.getElementById("generateButton");
+
+    const continueButton =
+      document.getElementById("continueButton");
+
+    const savedMessage =
+      document.getElementById("savedMessage");
+
+    const practiceArea =
+      document.getElementById("practiceArea");
+
+    const questionsContainer =
+      document.getElementById("questions");
+
+    const progressBox =
+      document.getElementById("progressBox");
+
+    const saveButton =
+      document.getElementById("saveButton");
+
+    const restartButton =
+      document.getElementById("restartButton");
+
+    const scriptPreviewCard =
+      document.getElementById("scriptPreviewCard");
+
+    const scriptPreview =
+      document.getElementById("scriptPreview");
+
+
+    let currentPractice = null;
+
+
+    /*
+      =====================================================
+      UTILITY FUNCTIONS
+      =====================================================
+    */
+
+    function shuffle(array) {
+
+      const copy =
+        array.slice();
+
+      for (
+        let i = copy.length - 1;
+        i > 0;
+        i--
+      ) {
+
+        const j =
+          Math.floor(
+            Math.random() * (i + 1)
+          );
+
+        const temporary =
+          copy[i];
+
+        copy[i] =
+          copy[j];
+
+        copy[j] =
+          temporary;
+
+      }
+
+      return copy;
+
+    }
+
+
+    function normalizeWord(word) {
+
+      return word
+        .replace(
+          /^[^A-Za-z0-9'’-]+/,
+          ""
+        )
+        .replace(
+          /[^A-Za-z0-9'’-]+$/,
+          ""
+        );
+
+    }
+
+
+    function getWords(text) {
+
+      return text
+        .split(/\s+/)
+        .map(normalizeWord)
+        .filter(Boolean);
+
+    }
+
+
+    /*
+      =====================================================
+      CHOOSING WORDS TO REMOVE
+      =====================================================
+
+      We prefer meaningful words rather than very short
+      words such as A, I, IN, OF, TO, etc.
+    */
+
+    function isGoodBlankWord(word) {
+
+      const clean =
+        normalizeWord(word);
+
+      const lower =
+        clean.toLowerCase();
+
+      const commonShortWords = [
+        "a",
+        "an",
+        "the",
+        "i",
+        "am",
+        "is",
+        "are",
+        "in",
+        "on",
+        "at",
+        "to",
+        "of",
+        "and",
+        "or",
+        "my",
+        "we",
+        "they",
+        "he",
+        "she",
+        "it"
+      ];
+
+      if (
+        clean.length < 3
+      ) {
+        return false;
+      }
+
+      if (
+        commonShortWords.includes(lower)
+      ) {
+        return false;
+      }
+
+      return true;
+
+    }
+
+
+    /*
+      =====================================================
+      CREATE QUESTIONS
+      =====================================================
+    */
+
+    function generateQuestions(script) {
+
+      const lines =
+        script
+          .replace(/\r\n/g, "\n")
+          .split("\n");
+
+
+      const questions = [];
+
+
+      lines.forEach(
+        function(line) {
+
+          const trimmed =
+            line.trim();
+
+          if (!trimmed) {
+            return;
+          }
+
+
+          /*
+            Keep the original sentence structure.
+          */
+
+          const sentenceParts =
+            trimmed.match(
+              /[^.!?]+[.!?]+|[^.!?]+$/g
+            );
+
+
+          if (!sentenceParts) {
+            return;
+          }
+
+
+          sentenceParts.forEach(
+            function(sentence) {
+
+              const tokens =
+                sentence
+                  .split(/\s+/)
+                  .filter(Boolean);
+
+
+              if (
+                tokens.length < 3
+              ) {
+                return;
+              }
+
+
+              const candidates =
+                tokens
+                  .map(
+                    function(token, index) {
+
+                      return {
+                        token: token,
+                        index: index,
+                        clean: normalizeWord(token)
+                      };
+
+                    }
+                  )
+                  .filter(
+                    function(item) {
+
+                      return isGoodBlankWord(
+                        item.clean
+                      );
+
+                    }
+                  );
+
+
+              if (
+                candidates.length === 0
+              ) {
+                return;
+              }
+
+
+              /*
+                Initially remove only ONE word
+                from each sentence.
+
+                This keeps Level 1 accessible.
+              */
+
+              const chosen =
+                candidates[
+                  Math.floor(
+                    Math.random() *
+                    candidates.length
+                  )
+                ];
+
+
+              const correct =
+                chosen.clean;
+
+
+              /*
+                Create distractors from other words
+                in the script.
+
+                They are deliberately simple and
+                different from the answer.
+              */
+
+              const possibleDistractors =
+                getWords(script)
+                  .filter(
+                    function(word) {
+
+                      const clean =
+                        normalizeWord(word);
+
+                      return (
+                        clean &&
+                        clean.toLowerCase() !==
+                          correct.toLowerCase() &&
+                        clean.length >= 3
+                      );
+
+                    }
+                  );
+
+
+              const uniqueDistractors =
+                [];
+
+
+              possibleDistractors.forEach(
+                function(word) {
+
+                  const clean =
+                    normalizeWord(word);
+
+                  const alreadyUsed =
+                    uniqueDistractors.some(
+                      function(existing) {
+
+                        return (
+                          existing.toLowerCase() ===
+                          clean.toLowerCase()
+                        );
+
+                      }
+                    );
+
+
+                  if (
+                    !alreadyUsed &&
+                    clean.toLowerCase() !==
+                      correct.toLowerCase()
+                  ) {
+
+                    uniqueDistractors.push(
+                      clean
+                    );
+
+                  }
+
+                }
+              );
+
+
+              /*
+                Prefer distractors that are not
+                identical to the correct word.
+              */
+
+              const distractors =
+                shuffle(
+                  uniqueDistractors
+                ).slice(0, 2);
+
+
+              /*
+                If the script is very short, there may
+                not be two different words available.
+
+                In that case, use simple generic
+                distractors.
+              */
+
+              const fallbackWords = [
+                "COUNTRY",
+                "PEOPLE",
+                "TRADITIONAL",
+                "FAMILY",
+                "SCHOOL"
+              ];
+
+
+              for (
+                let i = distractors.length;
+                i < 2;
+                i++
+              ) {
+
+                const fallback =
+                  fallbackWords[i];
+
+                if (
+                  fallback.toLowerCase() !==
+                    correct.toLowerCase() &&
+                  !distractors.some(
+                    function(item) {
+
+                      return (
+                        item.toLowerCase() ===
+                        fallback.toLowerCase()
+                      );
+
+                    }
+                  )
+                ) {
+
+                  distractors.push(
+                    fallback
+                  );
+
+                }
+
+              }
+
+
+              const choices =
+                shuffle([
+                  correct,
+                  distractors[0],
+                  distractors[1]
+                ]);
+
+
+              questions.push({
+
+                originalSentence:
+                  sentence,
+
+                tokens:
+                  tokens,
+
+                blankIndex:
+                  chosen.index,
+
+                correct:
+                  correct,
+
+                choices:
+                  choices,
+
+                answered:
+                  false,
+
+                selected:
+                  null,
+
+                correctAnswer:
+                  false
+
+              });
+
+            }
+          );
+
+        }
+      );
+
+
+      return questions;
+
+    }
+
+
+    /*
+      =====================================================
+      DISPLAY PRACTICE
+      =====================================================
+    */
+
+    function renderPractice() {
+
+      if (
+        !currentPractice ||
+        !currentPractice.questions ||
+        currentPractice.questions.length === 0
+      ) {
+
+        return;
+
+      }
+
+
+      practiceArea.style.display =
+        "block";
+
+
+      scriptPreviewCard.classList.remove(
+        "hidden"
+      );
+
+
+      scriptPreview.textContent =
+        currentPractice.script;
+
+
+      questionsContainer.innerHTML =
+        "";
+
+
+      currentPractice.questions.forEach(
+        function(question, questionIndex) {
+
+          const questionCard =
+            document.createElement("div");
+
+          questionCard.className =
+            "question";
+
+
+          const questionNumber =
+            document.createElement("div");
+
+          questionNumber.className =
+            "question-number";
+
+          questionNumber.textContent =
+            "QUESTION " +
+            (questionIndex + 1);
+
+
+          questionCard.appendChild(
+            questionNumber
+          );
+
+
+          const sentence =
+            document.createElement("div");
+
+          sentence.className =
+            "sentence";
+
+
+          question.tokens.forEach(
+            function(token, tokenIndex) {
+
+              if (
+                tokenIndex ===
+                question.blankIndex
+              ) {
+
+                const blank =
+                  document.createElement("span");
+
+                blank.className =
+                  "blank";
+
+                blank.textContent =
+                  question.selected ||
+                  "________";
+
+                blank.dataset.question =
+                  questionIndex;
+
+                sentence.appendChild(
+                  blank
+                );
+
+              } else {
+
+                sentence.appendChild(
+                  document.createTextNode(
+                    token
+                  )
+                );
+
+              }
+
+
+              sentence.appendChild(
+                document.createTextNode(" ")
+              );
+
+            }
+          );
+
+
+          questionCard.appendChild(
+            sentence
+          );
+
+
+          const choices =
+            document.createElement("div");
+
+          choices.className =
+            "choices";
+
+
+          question.choices.forEach(
+            function(choice) {
+
+              const button =
+                document.createElement("button");
+
+              button.type =
+                "button";
+
+              button.className =
+                "choice";
+
+              button.textContent =
+                choice;
+
+
+              if (
+                question.answered
+              ) {
+
+                button.disabled =
+                  true;
+
+
+                if (
+                  choice.toLowerCase() ===
+                  question.correct.toLowerCase()
+                ) {
+
+                  button.classList.add(
+                    "correct"
+                  );
+
+                }
+
+
+                if (
+                  choice.toLowerCase() ===
+                  String(
+                    question.selected
+                  ).toLowerCase() &&
+                  !question.correctAnswer
+                ) {
+
+                  button.classList.add(
+                    "incorrect"
+                  );
+
+                }
+
+              }
+
+
+              button.addEventListener(
+                "click",
+                function() {
+
+                  answerQuestion(
+                    questionIndex,
+                    choice
+                  );
+
+                }
+              );
+
+
+              choices.appendChild(
+                button
+              );
+
+            }
+          );
+
+
+          questionCard.appendChild(
+            choices
+          );
+
+
+          const feedback =
+            document.createElement("div");
+
+          feedback.className =
+            "feedback";
+
+
+          if (
+            question.answered
+          ) {
+
+            if (
+              question.correctAnswer
+            ) {
+
+              feedback.textContent =
+                "✓ CORRECT";
+
+            } else {
+
+              feedback.textContent =
+                "✗ The correct answer is " +
+                question.correct;
+
+            }
+
+          }
+
+
+          questionCard.appendChild(
+            feedback
+          );
+
+
+          questionsContainer.appendChild(
+            questionCard
+          );
+
+        }
+      );
+
+
+      updateProgress();
+
+    }
+
+
+    /*
+      =====================================================
+      ANSWER
+      =====================================================
+    */
+
+    function answerQuestion(
+      questionIndex,
+      selected
+    ) {
+
+      const question =
+        currentPractice.questions[
+          questionIndex
+        ];
+
+
+      if (
+        question.answered
+      ) {
+        return;
+      }
+
+
+      question.answered =
+        true;
+
+      question.selected =
+        selected;
+
+
+      question.correctAnswer =
+        selected.toLowerCase() ===
+        question.correct.toLowerCase();
+
+
+      renderPractice();
+
+    }
+
+
+    /*
+      =====================================================
+      PROGRESS
+      =====================================================
+    */
+
+    function updateProgress() {
+
+      const total =
+        currentPractice.questions.length;
+
+
+      const answered =
+        currentPractice.questions.filter(
+          function(question) {
+
+            return question.answered;
+
+          }
+        ).length;
+
+
+      const correct =
+        currentPractice.questions.filter(
+          function(question) {
+
+            return question.correctAnswer;
+
+          }
+        ).length;
+
+
+      progressBox.textContent =
+        "PROGRESS: " +
+        answered +
+        " / " +
+        total +
+        "     |     SCORE: " +
+        correct +
+        " / " +
+        total;
+
+    }
+
+
+    /*
+      =====================================================
+      SAVE
+      =====================================================
+    */
+
+    function saveProgress() {
+
+      if (
+        !currentPractice
+      ) {
+        return;
+      }
+
+
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(
+          currentPractice
+        )
+      );
+
+
+      savedMessage.textContent =
+        "Progress saved on this device.";
+
+    }
+
+
+    /*
+      =====================================================
+      LOAD SAVED PROGRESS
+      =====================================================
+    */
+
+    function loadSavedProgress() {
+
+      const saved =
+        localStorage.getItem(
+          STORAGE_KEY
+        );
+
+
+      if (!saved) {
+
+        savedMessage.textContent =
+          "There is no saved practice yet.";
+
+        return;
+
+      }
+
+
+      try {
+
+        currentPractice =
+          JSON.parse(saved);
+
+
+        renderPractice();
+
+
+        savedMessage.textContent =
+          "Saved practice loaded.";
+
+      } catch (error) {
+
+        localStorage.removeItem(
+          STORAGE_KEY
+        );
+
+
+        savedMessage.textContent =
+          "The saved practice could not be loaded.";
+
+      }
+
+    }
+
+
+    /*
+      =====================================================
+      GENERATE
+      =====================================================
+    */
+
+    generateButton.addEventListener(
+      "click",
+      function() {
+
+        const script =
+          scriptInput.value.trim();
+
+
+        if (!script) {
+
+          savedMessage.textContent =
+            "Please paste your script first.";
+
+          return;
+
+        }
+
+
+        const questions =
+          generateQuestions(
+            script
+          );
+
+
+        if (
+          questions.length === 0
+        ) {
+
+          savedMessage.textContent =
+            "We could not create practice questions from this script. Try adding complete sentences.";
+
+          return;
+
+        }
+
+
+        currentPractice = {
+
+          script:
+            script,
+
+          questions:
+            questions,
+
+          createdAt:
+            new Date().toISOString()
+
+        };
+
+
+        renderPractice();
+
+
+        savedMessage.textContent =
+          "Practice generated.";
+
+      }
+    );
+
+
+    /*
+      =====================================================
+      CONTINUE
+      =====================================================
+    */
+
+    continueButton.addEventListener(
+      "click",
+      function() {
+
+        loadSavedProgress();
+
+      }
+    );
+
+
+    /*
+      =====================================================
+      SAVE
+      =====================================================
+    */
+
+    saveButton.addEventListener(
+      "click",
+      function() {
+
+        saveProgress();
+
+      }
+    );
+
+
+    /*
+      =====================================================
+      START OVER
+      =====================================================
+    */
+
+    restartButton.addEventListener(
+      "click",
+      function() {
+
+        if (
+          !currentPractice
+        ) {
+          return;
+        }
+
+
+        const confirmed =
+          window.confirm(
+            "Start this practice again? Your current answers will be cleared."
+          );
+
+
+        if (!confirmed) {
+          return;
+        }
+
+
+        const newQuestions =
+          generateQuestions(
+            currentPractice.script
+          );
+
+
+        currentPractice.questions =
+          newQuestions;
+
+
+        currentPractice.createdAt =
+          new Date().toISOString();
+
+
+        renderPractice();
+
+
+        savedMessage.textContent =
+          "Practice restarted. Save when you want to keep your progress.";
+
+      }
+    );
+
+
+    /*
+      =====================================================
+      INITIAL MESSAGE
+      =====================================================
+    */
+
+    if (
+      localStorage.getItem(
+        STORAGE_KEY
+      )
+    ) {
+
+      savedMessage.textContent =
+        "You have saved practice available on this device.";
+
+    }
+
+  </script>
+
+</body>
+</html>
