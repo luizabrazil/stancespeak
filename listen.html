@@ -12,21 +12,17 @@
     }
 
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
       background: #f7f7f5;
       color: #222;
-    }
-
-    .container {
-      max-width: 950px;
+      max-width: 1000px;
       margin: 0 auto;
       padding: 35px 20px 60px;
     }
 
     header {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 35px;
     }
 
     h1 {
@@ -34,10 +30,10 @@
       margin: 0 0 8px;
     }
 
-    .subtitle {
+    header p {
       color: #666;
-      font-size: 18px;
       margin: 0;
+      font-size: 17px;
     }
 
     .card {
@@ -48,28 +44,26 @@
       box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
     }
 
-    label {
-      display: block;
-      font-weight: bold;
-      font-size: 18px;
-      margin-bottom: 10px;
+    .card h2 {
+      margin-top: 0;
+      font-size: 23px;
     }
 
     textarea {
       width: 100%;
-      min-height: 220px;
-      padding: 15px;
+      min-height: 230px;
+      resize: vertical;
       border: 2px solid #ddd;
       border-radius: 10px;
+      padding: 15px;
       font-family: Arial, sans-serif;
       font-size: 18px;
       line-height: 1.6;
-      resize: vertical;
     }
 
     textarea:focus {
       outline: none;
-      border-color: #888;
+      border-color: #555;
     }
 
     .button-row {
@@ -79,86 +73,144 @@
       margin-top: 15px;
     }
 
+    button,
+    select {
+      font-family: Arial, sans-serif;
+      font-size: 15px;
+    }
+
     button {
       border: none;
       border-radius: 8px;
-      padding: 11px 18px;
+      padding: 11px 17px;
       background: #222;
       color: white;
-      font-size: 16px;
       cursor: pointer;
     }
 
     button:hover {
-      opacity: 0.8;
+      opacity: 0.85;
+    }
+
+    button.secondary {
+      background: #e9e9e6;
+      color: #222;
+    }
+
+    button.danger {
+      background: #8b1e1e;
+      color: white;
     }
 
     button:disabled {
-      opacity: 0.4;
+      opacity: 0.45;
       cursor: not-allowed;
     }
 
-    .secondary {
-      background: #666;
-    }
-
-    .danger {
-      background: #444;
-    }
-
     .settings {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 12px;
+      display: grid;
+      grid-template-columns: 1fr 220px;
+      gap: 20px;
     }
 
-    .settings label {
-      margin: 0;
-      font-size: 16px;
+    .field label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 7px;
     }
 
     select {
-      padding: 10px;
+      width: 100%;
+      padding: 11px;
       border: 1px solid #ccc;
       border-radius: 8px;
       background: white;
-      font-size: 16px;
     }
 
-    .reading-area {
-      font-size: 24px;
+    input[type="range"] {
+      width: 100%;
+    }
+
+    .speed-value {
+      color: #666;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+
+    .script-display {
+      min-height: 190px;
+      border: 2px solid #eee;
+      border-radius: 10px;
+      padding: 20px;
+      background: #fafafa;
+      font-size: 22px;
       line-height: 1.9;
     }
 
-    .sentence {
+    .word {
       display: inline;
-      padding: 4px 6px;
-      border-radius: 7px;
-      transition: background-color 0.15s;
+      padding: 2px 3px;
+      border-radius: 4px;
+      transition: background 0.1s ease;
     }
 
-    .sentence.active {
-      background-color: #fff176;
+    .word.active {
+      background: #ffe58a;
     }
 
-    .instruction {
-      color: #666;
-      margin-top: 12px;
-      font-size: 15px;
+    .sentence-break {
+      display: block;
+      height: 8px;
+    }
+
+    .empty-message {
+      color: #888;
+      font-size: 17px;
     }
 
     .status {
-      margin-top: 15px;
-      font-size: 16px;
+      min-height: 24px;
+      margin-top: 12px;
       color: #555;
-      min-height: 22px;
+      font-size: 15px;
+    }
+
+    .saved-list {
+      margin-top: 15px;
+    }
+
+    .saved-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 10px;
+      background: #fafafa;
+    }
+
+    .saved-item-name {
+      font-weight: bold;
+      word-break: break-word;
+    }
+
+    .saved-item-actions {
+      display: flex;
+      gap: 7px;
+      flex-shrink: 0;
+    }
+
+    .saved-item-actions button {
+      padding: 7px 10px;
+      font-size: 13px;
     }
 
     .recording-status {
+      min-height: 25px;
+      margin-top: 12px;
       font-weight: bold;
-      margin-bottom: 12px;
-      min-height: 22px;
     }
 
     audio {
@@ -166,34 +218,52 @@
       margin-top: 15px;
     }
 
-    .back {
-      display: inline-block;
-      padding: 10px 18px;
-      border-radius: 8px;
-      background: #222;
-      color: white;
-      text-decoration: none;
+    .notice {
+      background: #f1f1ee;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-top: 15px;
+      color: #555;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 700px) {
+      body {
+        padding: 25px 15px 50px;
+      }
+
       h1 {
         font-size: 30px;
       }
 
-      .reading-area {
-        font-size: 20px;
+      .settings {
+        grid-template-columns: 1fr;
+      }
+
+      .script-display {
+        font-size: 19px;
+      }
+
+      .button-row {
+        flex-direction: column;
       }
 
       button {
         width: 100%;
       }
 
-      .settings {
+      .saved-item {
+        flex-direction: column;
         align-items: stretch;
       }
 
-      select {
+      .saved-item-actions {
         width: 100%;
+      }
+
+      .saved-item-actions button {
+        flex: 1;
       }
     }
   </style>
@@ -201,64 +271,80 @@
 
 <body>
 
-  <div class="container">
-
-    <header>
-      <h1>LISTEN & READ</h1>
-      <p class="subtitle">
-        Listen to your script and follow along.
-      </p>
-    </header>
+  <header>
+    <h1>LISTEN & READ</h1>
+    <p>Listen to your script and follow the words as you practice.</p>
+  </header>
 
 
-    <!-- SCRIPT -->
+  <!-- SCRIPT -->
 
-    <div class="card">
+  <section class="card">
 
-      <label for="scriptInput">
-        YOUR SCRIPT
-      </label>
+    <h2>1. YOUR SCRIPT</h2>
 
-      <textarea
-        id="scriptInput"
-        placeholder="Paste or type your script here..."
-      ></textarea>
+    <textarea
+      id="scriptInput"
+      placeholder="Paste or type your script here..."
+    ></textarea>
 
-      <div class="button-row">
+    <div class="button-row">
 
-        <button id="saveScriptButton">
-          SAVE SCRIPT
-        </button>
+      <button id="saveScriptButton">
+        SAVE SCRIPT
+      </button>
 
-        <button id="loadScriptButton" class="secondary">
-          LOAD SAVED SCRIPT
-        </button>
+      <button
+        id="downloadScriptButton"
+        class="secondary"
+      >
+        DOWNLOAD SCRIPT
+      </button>
 
-        <button id="downloadScriptButton" class="secondary">
-          DOWNLOAD SCRIPT
-        </button>
-
-        <button id="clearScriptButton" class="danger">
-          CLEAR
-        </button>
-
-      </div>
+      <button
+        id="clearScriptButton"
+        class="secondary"
+      >
+        CLEAR
+      </button>
 
     </div>
 
+    <div
+      id="scriptStatus"
+      class="status"
+    ></div>
 
-    <!-- LISTENING -->
+  </section>
 
-    <div class="card">
 
-      <label>
-        LISTEN & READ
-      </label>
+  <!-- SAVED SCRIPTS -->
 
-      <div class="settings">
+  <section class="card">
+
+    <h2>2. SAVED SCRIPTS</h2>
+
+    <div id="savedScriptsList">
+      <div class="empty-message">
+        No saved scripts yet.
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- VOICE SETTINGS -->
+
+  <section class="card">
+
+    <h2>3. VOICE SETTINGS</h2>
+
+    <div class="settings">
+
+      <div class="field">
 
         <label for="voiceSelect">
-          Voice:
+          English Voice
         </label>
 
         <select id="voiceSelect">
@@ -267,128 +353,136 @@
           </option>
         </select>
 
-        <label for="speedSelect">
-          Speed:
+      </div>
+
+      <div class="field">
+
+        <label for="speedControl">
+          Speed
         </label>
 
-        <select id="speedSelect">
+        <input
+          id="speedControl"
+          type="range"
+          min="0.5"
+          max="1.5"
+          step="0.1"
+          value="0.9"
+        >
 
-          <option value="0.7">0.7×</option>
-          <option value="0.8">0.8×</option>
-          <option value="0.9" selected>0.9×</option>
-          <option value="1">1×</option>
-          <option value="1.1">1.1×</option>
-          <option value="1.2">1.2×</option>
+        <div class="speed-value">
+          <span id="speedValue">0.9</span>x
+        </div>
 
-        </select>
-
-      </div>
-
-      <div class="button-row">
-
-        <button id="playButton">
-          ▶ PLAY
-        </button>
-
-        <button id="pauseButton">
-          ⏸ PAUSE
-        </button>
-
-        <button id="stopButton">
-          ■ STOP
-        </button>
-
-      </div>
-
-      <div id="speechStatus" class="status">
-        Paste your script and press PLAY.
       </div>
 
     </div>
 
+  </section>
 
-    <!-- READING TEXT -->
 
-    <div class="card">
+  <!-- LISTEN AND READ -->
 
-      <label>
-        FOLLOW THE SCRIPT
-      </label>
+  <section class="card">
 
-      <div
-        id="readingArea"
-        class="reading-area"
-      >
+    <h2>4. LISTEN & READ</h2>
+
+    <div
+      id="scriptDisplay"
+      class="script-display"
+    >
+      <div class="empty-message">
         Your script will appear here.
       </div>
-
-      <p class="instruction">
-        The sentence being spoken will be highlighted.
-      </p>
-
     </div>
 
+    <div class="button-row">
 
-    <!-- RECORDING -->
+      <button id="playButton">
+        ▶ PLAY
+      </button>
 
-    <div class="card">
-
-      <label>
-        RECORD YOURSELF
-      </label>
-
-      <p>
-        Read your script aloud and listen to your recording.
-      </p>
-
-      <div
-        id="recordingStatus"
-        class="recording-status"
+      <button
+        id="pauseButton"
+        class="secondary"
+        disabled
       >
-        Ready to record.
-      </div>
+        ⏸ PAUSE
+      </button>
 
-      <div class="button-row">
-
-        <button id="recordButton">
-          🎙 RECORD
-        </button>
-
-        <button
-          id="stopRecordingButton"
-          class="danger"
-          disabled
-        >
-          ■ STOP RECORDING
-        </button>
-
-        <button
-          id="downloadRecordingButton"
-          class="secondary"
-          disabled
-        >
-          ↓ DOWNLOAD RECORDING
-        </button>
-
-      </div>
-
-      <audio
-        id="audioPlayer"
-        controls
-        hidden
-      ></audio>
+      <button
+        id="stopButton"
+        class="secondary"
+        disabled
+      >
+        ■ STOP
+      </button>
 
     </div>
 
+    <div
+      id="speechStatus"
+      class="status"
+    ></div>
 
-    <a
-      class="back"
-      href="index.html"
-    >
-      ← BACK
-    </a>
+    <div class="notice">
+      The currently spoken word is highlighted.
+      Voice availability depends on your browser and device.
+    </div>
 
-  </div>
+  </section>
+
+
+  <!-- RECORDING -->
+
+  <section class="card">
+
+    <h2>5. PRACTICE YOUR VOICE</h2>
+
+    <p>
+      Record yourself saying the script. You can listen to the
+      recording and download it afterward.
+    </p>
+
+    <div class="button-row">
+
+      <button
+        id="recordButton"
+        class="danger"
+      >
+        ● RECORD MY VOICE
+      </button>
+
+      <button
+        id="stopRecordingButton"
+        class="secondary"
+        disabled
+      >
+        ■ STOP RECORDING
+      </button>
+
+      <button
+        id="downloadRecordingButton"
+        class="secondary"
+        disabled
+      >
+        DOWNLOAD MY RECORDING
+      </button>
+
+    </div>
+
+    <div
+      id="recordingStatus"
+      class="recording-status"
+    ></div>
+
+    <audio
+      id="recordingPlayer"
+      controls
+      style="display:none;"
+    ></audio>
+
+  </section>
 
 
   <script>
@@ -400,14 +494,32 @@
     const scriptInput =
       document.getElementById("scriptInput");
 
-    const readingArea =
-      document.getElementById("readingArea");
+    const saveScriptButton =
+      document.getElementById("saveScriptButton");
+
+    const downloadScriptButton =
+      document.getElementById("downloadScriptButton");
+
+    const clearScriptButton =
+      document.getElementById("clearScriptButton");
+
+    const scriptStatus =
+      document.getElementById("scriptStatus");
+
+    const savedScriptsList =
+      document.getElementById("savedScriptsList");
 
     const voiceSelect =
       document.getElementById("voiceSelect");
 
-    const speedSelect =
-      document.getElementById("speedSelect");
+    const speedControl =
+      document.getElementById("speedControl");
+
+    const speedValue =
+      document.getElementById("speedValue");
+
+    const scriptDisplay =
+      document.getElementById("scriptDisplay");
 
     const playButton =
       document.getElementById("playButton");
@@ -421,18 +533,6 @@
     const speechStatus =
       document.getElementById("speechStatus");
 
-    const saveScriptButton =
-      document.getElementById("saveScriptButton");
-
-    const loadScriptButton =
-      document.getElementById("loadScriptButton");
-
-    const downloadScriptButton =
-      document.getElementById("downloadScriptButton");
-
-    const clearScriptButton =
-      document.getElementById("clearScriptButton");
-
     const recordButton =
       document.getElementById("recordButton");
 
@@ -442,36 +542,75 @@
     const downloadRecordingButton =
       document.getElementById("downloadRecordingButton");
 
-    const audioPlayer =
-      document.getElementById("audioPlayer");
-
     const recordingStatus =
       document.getElementById("recordingStatus");
 
+    const recordingPlayer =
+      document.getElementById("recordingPlayer");
+
 
     /* =====================================================
-       SPEECH VARIABLES
+       CHECK BROWSER SPEECH SUPPORT
+       ===================================================== */
+
+    const speechSupported =
+      "speechSynthesis" in window &&
+      "SpeechSynthesisUtterance" in window;
+
+
+    if (!speechSupported) {
+
+      speechStatus.textContent =
+        "Text-to-speech is not supported in this browser.";
+
+      playButton.disabled = true;
+      pauseButton.disabled = true;
+      stopButton.disabled = true;
+
+    }
+
+
+    /* =====================================================
+       DATA
        ===================================================== */
 
     let voices = [];
 
-    let sentences = [];
+    let speechWords = [];
 
-    let currentSentenceIndex = 0;
+    let currentWordIndex = 0;
 
-    let speechStopped = false;
+    let isSpeaking = false;
+
+    let isPaused = false;
+
+    let speechRunId = 0;
+
+    let mediaRecorder = null;
+
+    let recordedChunks = [];
+
+    let recordingBlob = null;
+
+    let recordingURL = null;
+
+
+    const STORAGE_KEY =
+      "stanceSpeakSavedScripts";
 
 
     /* =====================================================
-       LOAD VOICES
+       VOICES
        ===================================================== */
 
     function loadVoices() {
 
+      if (!speechSupported) {
+        return;
+      }
+
       voices =
         window.speechSynthesis.getVoices();
-
-      voiceSelect.innerHTML = "";
 
 
       const englishVoices =
@@ -485,13 +624,16 @@
         });
 
 
-      const voicesToUse =
+      voiceSelect.innerHTML = "";
+
+
+      const available =
         englishVoices.length > 0
           ? englishVoices
           : voices;
 
 
-      if (voicesToUse.length === 0) {
+      if (available.length === 0) {
 
         const option =
           document.createElement("option");
@@ -499,21 +641,21 @@
         option.value = "";
 
         option.textContent =
-          "Default browser voice";
+          "No voices available yet";
 
         voiceSelect.appendChild(option);
 
         return;
-
       }
 
 
-      voicesToUse.forEach(function(voice, index) {
+      available.forEach(function(voice) {
 
         const option =
           document.createElement("option");
 
-        option.value = index;
+        option.value =
+          voices.indexOf(voice);
 
         option.textContent =
           voice.name +
@@ -525,527 +667,454 @@
 
       });
 
+
+      const usVoice =
+        available.find(function(voice) {
+
+          return voice.lang
+            .toLowerCase() === "en-us";
+
+        });
+
+
+      if (usVoice) {
+
+        voiceSelect.value =
+          voices.indexOf(usVoice);
+
+      } else {
+
+        voiceSelect.value =
+          voices.indexOf(available[0]);
+
+      }
+
     }
 
 
-    loadVoices();
-
-    if ("onvoiceschanged" in window.speechSynthesis) {
+    if (speechSupported) {
 
       window.speechSynthesis.onvoiceschanged =
         loadVoices;
 
+      loadVoices();
+
     }
 
 
     /* =====================================================
-       SPLIT SCRIPT INTO SENTENCES
+       SPEED
        ===================================================== */
 
-    function getSentences(text) {
+    speedControl.addEventListener(
+      "input",
+      function() {
 
-      const cleanedText =
+        speedValue.textContent =
+          speedControl.value;
+
+      }
+    );
+
+
+    /* =====================================================
+       SCRIPT PARSING
+       ===================================================== */
+
+    function createWordElements(text) {
+
+      scriptDisplay.innerHTML = "";
+
+      speechWords = [];
+
+
+      if (!text.trim()) {
+
+        const message =
+          document.createElement("div");
+
+        message.className =
+          "empty-message";
+
+        message.textContent =
+          "Your script will appear here.";
+
+        scriptDisplay.appendChild(message);
+
+        return;
+
+      }
+
+
+      const lines =
         text
           .replace(/\r\n/g, "\n")
-          .trim();
+          .split("\n");
 
 
-      if (!cleanedText) {
-        return [];
-      }
+      lines.forEach(function(line, lineIndex) {
+
+        const trimmedLine =
+          line.trim();
 
 
-      /*
-        Split after ., ! or ?
-        while preserving the punctuation.
-      */
+        if (!trimmedLine) {
 
-      const matches =
-        cleanedText.match(
-          /[^.!?]+[.!?]+|[^.!?]+$/g
-        );
+          const breakElement =
+            document.createElement("div");
+
+          breakElement.className =
+            "sentence-break";
+
+          scriptDisplay.appendChild(
+            breakElement
+          );
+
+          return;
+
+        }
 
 
-      if (!matches) {
-        return [cleanedText];
-      }
+        /*
+          Split the line while keeping punctuation
+          attached to the word.
+        */
+
+        const tokens =
+          trimmedLine.split(/\s+/);
 
 
-      return matches
-        .map(function(sentence) {
-          return sentence.trim();
-        })
-        .filter(function(sentence) {
-          return sentence.length > 0;
+        tokens.forEach(function(token) {
+
+          const wordSpan =
+            document.createElement("span");
+
+          wordSpan.className =
+            "word";
+
+          wordSpan.textContent =
+            token;
+
+          wordSpan.dataset.index =
+            speechWords.length;
+
+
+          speechWords.push({
+            text: token,
+            element: wordSpan
+          });
+
+
+          scriptDisplay.appendChild(
+            wordSpan
+          );
+
+
+          scriptDisplay.appendChild(
+            document.createTextNode(" ")
+          );
+
         });
+
+
+        if (lineIndex <
+            lines.length - 1) {
+
+          const breakElement =
+            document.createElement("div");
+
+          breakElement.className =
+            "sentence-break";
+
+          scriptDisplay.appendChild(
+            breakElement
+          );
+
+        }
+
+      });
 
     }
 
-
-    /* =====================================================
-       DISPLAY SCRIPT
-       ===================================================== */
 
     function displayScript(text) {
 
-      readingArea.innerHTML = "";
-
-      sentences =
-        getSentences(text);
-
-
-      if (sentences.length === 0) {
-
-        readingArea.textContent =
-          "Your script will appear here.";
-
-        return;
-
-      }
-
-
-      sentences.forEach(
-        function(sentence, index) {
-
-          const span =
-            document.createElement("span");
-
-          span.className =
-            "sentence";
-
-          span.dataset.index =
-            index;
-
-          span.textContent =
-            sentence + " ";
-
-          readingArea.appendChild(span);
-
-        }
-      );
+      createWordElements(text);
 
     }
 
-
-    /* =====================================================
-       HIGHLIGHT
-       ===================================================== */
-
-    function highlightSentence(index) {
-
-      const allSentences =
-        readingArea.querySelectorAll(
-          ".sentence"
-        );
-
-
-      allSentences.forEach(
-        function(sentence) {
-
-          sentence.classList.remove(
-            "active"
-          );
-
-        }
-      );
-
-
-      const current =
-        readingArea.querySelector(
-          '.sentence[data-index="' +
-          index +
-          '"]'
-        );
-
-
-      if (current) {
-
-        current.classList.add("active");
-
-        current.scrollIntoView({
-          behavior: "smooth",
-          block: "center"
-        });
-
-      }
-
-    }
-
-
-    function clearHighlight() {
-
-      const allSentences =
-        readingArea.querySelectorAll(
-          ".sentence"
-        );
-
-
-      allSentences.forEach(
-        function(sentence) {
-
-          sentence.classList.remove(
-            "active"
-          );
-
-        }
-      );
-
-    }
-
-
-    /* =====================================================
-       GET SELECTED VOICE
-       ===================================================== */
-
-    function getSelectedVoice() {
-
-      const englishVoices =
-        voices.filter(function(voice) {
-
-          return voice.lang &&
-            voice.lang
-              .toLowerCase()
-              .startsWith("en");
-
-        });
-
-
-      const availableVoices =
-        englishVoices.length > 0
-          ? englishVoices
-          : voices;
-
-
-      const selectedIndex =
-        Number(voiceSelect.value);
-
-
-      return availableVoices[selectedIndex] ||
-        null;
-
-    }
-
-
-    /* =====================================================
-       SPEAK CURRENT SENTENCE
-       ===================================================== */
-
-    function speakCurrentSentence() {
-
-      if (speechStopped) {
-        return;
-      }
-
-
-      if (
-        currentSentenceIndex >=
-        sentences.length
-      ) {
-
-        clearHighlight();
-
-        speechStatus.textContent =
-          "Finished.";
-
-        return;
-
-      }
-
-
-      const sentence =
-        sentences[currentSentenceIndex];
-
-
-      highlightSentence(
-        currentSentenceIndex
-      );
-
-
-      speechStatus.textContent =
-        "Reading sentence " +
-        (currentSentenceIndex + 1) +
-        " of " +
-        sentences.length +
-        "...";
-
-
-      const utterance =
-        new SpeechSynthesisUtterance(
-          sentence
-        );
-
-
-      utterance.lang =
-        "en-US";
-
-
-      utterance.rate =
-        Number(speedSelect.value);
-
-
-      const selectedVoice =
-        getSelectedVoice();
-
-
-      if (selectedVoice) {
-
-        utterance.voice =
-          selectedVoice;
-
-      }
-
-
-      utterance.onend =
-        function() {
-
-          if (speechStopped) {
-            return;
-          }
-
-
-          currentSentenceIndex++;
-
-
-          /*
-            Small delay between sentences.
-            This makes the highlighting easier
-            for students to follow.
-          */
-
-          setTimeout(
-            function() {
-
-              speakCurrentSentence();
-
-            },
-            100
-          );
-
-        };
-
-
-      utterance.onerror =
-        function(event) {
-
-          if (speechStopped) {
-            return;
-          }
-
-
-          /*
-            "canceled" can happen normally when
-            STOP is pressed, so don't show an
-            error in that situation.
-          */
-
-          if (
-            event.error === "canceled"
-          ) {
-            return;
-          }
-
-
-          speechStatus.textContent =
-            "The browser could not read the text.";
-
-        };
-
-
-      window.speechSynthesis.speak(
-        utterance
-      );
-
-    }
-
-
-    /* =====================================================
-       PLAY / RESUME
-       ===================================================== */
-
-    playButton.addEventListener(
-      "click",
-      function() {
-
-        const text =
-          scriptInput.value.trim();
-
-
-        if (!text) {
-
-          speechStatus.textContent =
-            "Please paste your script first.";
-
-          return;
-
-        }
-
-
-        /*
-          If speech is paused, PLAY resumes it.
-        */
-
-        if (
-          window.speechSynthesis.paused
-        ) {
-
-          window.speechSynthesis.resume();
-
-          speechStatus.textContent =
-            "Reading...";
-
-          return;
-
-        }
-
-
-        /*
-          Otherwise start from the beginning.
-        */
-
-        window.speechSynthesis.cancel();
-
-        speechStopped = false;
-
-        currentSentenceIndex = 0;
-
-        displayScript(text);
-
-        speakCurrentSentence();
-
-      }
-    );
-
-
-    /* =====================================================
-       PAUSE
-       ===================================================== */
-
-    pauseButton.addEventListener(
-      "click",
-      function() {
-
-        if (
-          window.speechSynthesis.speaking &&
-          !window.speechSynthesis.paused
-        ) {
-
-          window.speechSynthesis.pause();
-
-          speechStatus.textContent =
-            "Paused.";
-
-        }
-
-      }
-    );
-
-
-    /* =====================================================
-       STOP
-       ===================================================== */
-
-    stopButton.addEventListener(
-      "click",
-      function() {
-
-        speechStopped = true;
-
-        window.speechSynthesis.cancel();
-
-        clearHighlight();
-
-        speechStatus.textContent =
-          "Stopped.";
-
-      }
-    );
-
-
-    /* =====================================================
-       UPDATE SCRIPT DISPLAY
-       ===================================================== */
 
     scriptInput.addEventListener(
       "input",
       function() {
 
-        /*
-          Stop speech if the script changes.
-        */
+        if (isSpeaking) {
 
-        speechStopped = true;
+          stopSpeech();
 
-        window.speechSynthesis.cancel();
+        }
 
         displayScript(
           scriptInput.value
         );
 
-        speechStatus.textContent =
-          "Script changed. Press PLAY.";
-
       }
     );
 
 
     /* =====================================================
-       VOICE CHANGE
+       SAVED SCRIPTS
        ===================================================== */
 
-    voiceSelect.addEventListener(
-      "change",
-      function() {
+    function getSavedScripts() {
 
-        if (
-          window.speechSynthesis.speaking ||
-          window.speechSynthesis.paused
-        ) {
+      try {
 
-          speechStopped = true;
+        const raw =
+          localStorage.getItem(
+            STORAGE_KEY
+          );
 
-          window.speechSynthesis.cancel();
 
-          clearHighlight();
-
-          speechStatus.textContent =
-            "Voice changed. Press PLAY.";
-
+        if (!raw) {
+          return [];
         }
 
+
+        const parsed =
+          JSON.parse(raw);
+
+
+        if (!Array.isArray(parsed)) {
+          return [];
+        }
+
+
+        return parsed;
+
+      } catch (error) {
+
+        return [];
+
       }
-    );
+
+    }
+
+
+    function setSavedScripts(scripts) {
+
+      try {
+
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify(scripts)
+        );
+
+        return true;
+
+      } catch (error) {
+
+        return false;
+
+      }
+
+    }
+
+
+    function renderSavedScripts() {
+
+      const scripts =
+        getSavedScripts();
+
+
+      savedScriptsList.innerHTML = "";
+
+
+      if (scripts.length === 0) {
+
+        const message =
+          document.createElement("div");
+
+        message.className =
+          "empty-message";
+
+        message.textContent =
+          "No saved scripts yet.";
+
+        savedScriptsList.appendChild(
+          message
+        );
+
+        return;
+
+      }
+
+
+      scripts.forEach(function(script) {
+
+        const item =
+          document.createElement("div");
+
+        item.className =
+          "saved-item";
+
+
+        const name =
+          document.createElement("div");
+
+        name.className =
+          "saved-item-name";
+
+        name.textContent =
+          script.name;
+
+
+        const actions =
+          document.createElement("div");
+
+        actions.className =
+          "saved-item-actions";
+
+
+        const loadButton =
+          document.createElement("button");
+
+        loadButton.textContent =
+          "OPEN";
+
+        loadButton.className =
+          "secondary";
+
+
+        loadButton.addEventListener(
+          "click",
+          function() {
+
+            stopSpeech();
+
+            scriptInput.value =
+              script.text;
+
+            displayScript(
+              script.text
+            );
+
+            scriptStatus.textContent =
+              "Script loaded.";
+
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+
+          }
+        );
+
+
+        const downloadButton =
+          document.createElement("button");
+
+        downloadButton.textContent =
+          "DOWNLOAD";
+
+        downloadButton.className =
+          "secondary";
+
+
+        downloadButton.addEventListener(
+          "click",
+          function() {
+
+            downloadTextFile(
+              script.text,
+              createSafeFilename(
+                script.name
+              ) + ".txt"
+            );
+
+          }
+        );
+
+
+        const deleteButton =
+          document.createElement("button");
+
+        deleteButton.textContent =
+          "DELETE";
+
+        deleteButton.className =
+          "danger";
+
+
+        deleteButton.addEventListener(
+          "click",
+          function() {
+
+            const confirmed =
+              window.confirm(
+                'Delete "' +
+                script.name +
+                '"?'
+              );
+
+
+            if (!confirmed) {
+              return;
+            }
+
+
+            const remaining =
+              getSavedScripts()
+                .filter(function(saved) {
+
+                  return saved.id !==
+                    script.id;
+
+                });
+
+
+            setSavedScripts(
+              remaining
+            );
+
+
+            renderSavedScripts();
+
+
+            scriptStatus.textContent =
+              "Saved script deleted.";
+
+          }
+        );
+
+
+        actions.appendChild(
+          loadButton
+        );
+
+        actions.appendChild(
+          downloadButton
+        );
+
+        actions.appendChild(
+          deleteButton
+        );
+
+
+        item.appendChild(name);
+        item.appendChild(actions);
+
+        savedScriptsList.appendChild(
+          item
+        );
+
+      });
+
+    }
 
 
     /* =====================================================
-       SPEED CHANGE
-       ===================================================== */
-
-    speedSelect.addEventListener(
-      "change",
-      function() {
-
-        if (
-          window.speechSynthesis.speaking ||
-          window.speechSynthesis.paused
-        ) {
-
-          speechStopped = true;
-
-          window.speechSynthesis.cancel();
-
-          clearHighlight();
-
-          speechStatus.textContent =
-            "Speed changed. Press PLAY.";
-
-        }
-
-      }
-    );
-
-
-    /* =====================================================
-       SAVE SCRIPT
+       SAVE
        ===================================================== */
 
     saveScriptButton.addEventListener(
@@ -1058,73 +1127,157 @@
 
         if (!text) {
 
-          speechStatus.textContent =
-            "There is no script to save.";
+          scriptStatus.textContent =
+            "Please enter a script first.";
 
           return;
 
         }
 
 
-        localStorage.setItem(
-          "stanceSpeakScript",
+        const suggestedName =
           text
-        );
+            .split(/\s+/)
+            .slice(0, 6)
+            .join(" ");
 
 
-        speechStatus.textContent =
-          "Script saved on this device.";
-
-      }
-    );
-
-
-    /* =====================================================
-       LOAD SCRIPT
-       ===================================================== */
-
-    loadScriptButton.addEventListener(
-      "click",
-      function() {
-
-        const savedScript =
-          localStorage.getItem(
-            "stanceSpeakScript"
+        const name =
+          window.prompt(
+            "Name this script:",
+            suggestedName
           );
 
 
-        if (!savedScript) {
+        if (name === null) {
+          return;
+        }
 
-          speechStatus.textContent =
-            "No saved script was found on this device.";
+
+        const cleanName =
+          name.trim();
+
+
+        if (!cleanName) {
+
+          scriptStatus.textContent =
+            "Please enter a name.";
 
           return;
 
         }
 
 
-        speechStopped = true;
-
-        window.speechSynthesis.cancel();
-
-        scriptInput.value =
-          savedScript;
-
-        displayScript(
-          savedScript
-        );
+        const scripts =
+          getSavedScripts();
 
 
-        speechStatus.textContent =
-          "Saved script loaded.";
+        scripts.unshift({
+
+          id:
+            Date.now().toString() +
+            "-" +
+            Math.random()
+              .toString(36)
+              .slice(2),
+
+          name:
+            cleanName,
+
+          text:
+            text,
+
+          savedAt:
+            new Date().toISOString()
+
+        });
+
+
+        const success =
+          setSavedScripts(
+            scripts
+          );
+
+
+        if (!success) {
+
+          scriptStatus.textContent =
+            "The script could not be saved. Your browser may be blocking local storage.";
+
+          return;
+
+        }
+
+
+        renderSavedScripts();
+
+
+        scriptStatus.textContent =
+          "Script saved successfully.";
 
       }
     );
 
 
     /* =====================================================
-       DOWNLOAD SCRIPT
+       DOWNLOAD TEXT
        ===================================================== */
+
+    function createSafeFilename(name) {
+
+      return name
+        .replace(/[<>:"/\\|?*]+/g, "")
+        .replace(/\s+/g, "-")
+        .slice(0, 80) ||
+        "stance-speak-script";
+
+    }
+
+
+    function downloadTextFile(
+      text,
+      filename
+    ) {
+
+      const blob =
+        new Blob(
+          [text],
+          {
+            type:
+              "text/plain;charset=utf-8"
+          }
+        );
+
+
+      const url =
+        URL.createObjectURL(blob);
+
+
+      const link =
+        document.createElement("a");
+
+      link.href =
+        url;
+
+      link.download =
+        filename;
+
+
+      document.body.appendChild(link);
+
+      link.click();
+
+      link.remove();
+
+
+      setTimeout(function() {
+
+        URL.revokeObjectURL(url);
+
+      }, 1000);
+
+    }
+
 
     downloadScriptButton.addEventListener(
       "click",
@@ -1136,70 +1289,55 @@
 
         if (!text) {
 
-          speechStatus.textContent =
-            "There is no script to download.";
+          scriptStatus.textContent =
+            "Please enter a script first.";
 
           return;
 
         }
 
 
-        const blob =
-          new Blob(
-            [text],
-            {
-              type: "text/plain;charset=utf-8"
-            }
+        const name =
+          window.prompt(
+            "File name:",
+            "stance-speak-script"
           );
 
 
-        const url =
-          URL.createObjectURL(blob);
+        if (name === null) {
+          return;
+        }
 
 
-        const link =
-          document.createElement("a");
+        downloadTextFile(
+          text,
+          createSafeFilename(name) +
+          ".txt"
+        );
 
 
-        link.href =
-          url;
-
-        link.download =
-          "stance-speak-script.txt";
-
-
-        document.body.appendChild(link);
-
-        link.click();
-
-        document.body.removeChild(link);
-
-
-        URL.revokeObjectURL(url);
+        scriptStatus.textContent =
+          "Script downloaded.";
 
       }
     );
 
 
     /* =====================================================
-       CLEAR SCRIPT
+       CLEAR
        ===================================================== */
 
     clearScriptButton.addEventListener(
       "click",
       function() {
 
-        speechStopped = true;
-
-        window.speechSynthesis.cancel();
+        stopSpeech();
 
         scriptInput.value = "";
 
         displayScript("");
 
-        clearHighlight();
-
-        speechStatus.textContent =
+        scriptStatus.textContent =
           "Script cleared.";
 
       }
@@ -1207,20 +1345,605 @@
 
 
     /* =====================================================
-       RECORDING
+       WORD HIGHLIGHTING
        ===================================================== */
 
-    let mediaRecorder = null;
+    function clearWordHighlights() {
 
-    let recordedChunks = [];
+      speechWords.forEach(
+        function(item) {
 
-    let recordingStream = null;
+          item.element.classList.remove(
+            "active"
+          );
 
-    let recordingBlob = null;
+        }
+      );
+
+    }
+
+
+    function highlightWord(index) {
+
+      clearWordHighlights();
+
+
+      if (
+        index >= 0 &&
+        index < speechWords.length
+      ) {
+
+        const item =
+          speechWords[index];
+
+
+        item.element.classList.add(
+          "active"
+        );
+
+
+        item.element.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+
+      }
+
+    }
 
 
     /* =====================================================
-       RECORD
+       SPEECH TOKENIZATION
+       ===================================================== */
+
+    function cleanToken(token) {
+
+      return token
+        .replace(/^[^A-Za-z0-9'’-]+/, "")
+        .replace(/[^A-Za-z0-9'’-]+$/, "");
+
+    }
+
+
+    function buildSpeechChunks(text) {
+
+      const lines =
+        text
+          .replace(/\r\n/g, "\n")
+          .split("\n");
+
+
+      const chunks = [];
+
+
+      lines.forEach(function(line) {
+
+        const trimmed =
+          line.trim();
+
+
+        if (!trimmed) {
+          return;
+        }
+
+
+        const sentences =
+          trimmed.match(
+            /[^.!?]+[.!?]+|[^.!?]+$/g
+          );
+
+
+        if (!sentences) {
+          return;
+        }
+
+
+        sentences.forEach(
+          function(sentence) {
+
+            const clean =
+              sentence.trim();
+
+
+            if (clean) {
+
+              chunks.push(clean);
+
+            }
+
+          }
+        );
+
+      });
+
+
+      return chunks;
+
+    }
+
+
+    function getGlobalWordIndex(
+      spokenSentence,
+      boundaryCharIndex
+    ) {
+
+      /*
+        Find the word in the displayed script
+        by counting words before the current
+        speech sentence.
+      */
+
+      const before =
+        spokenSentence
+          .slice(0, boundaryCharIndex)
+          .trim();
+
+
+      if (!before) {
+        return currentWordIndex;
+      }
+
+
+      const wordsBefore =
+        before
+          .split(/\s+/)
+          .filter(Boolean)
+          .length;
+
+
+      return currentWordIndex +
+        wordsBefore;
+
+    }
+
+
+    /* =====================================================
+       PLAY
+       ===================================================== */
+
+    function speakChunks(
+      chunks,
+      chunkIndex,
+      runId
+    ) {
+
+      if (
+        !isSpeaking ||
+        runId !== speechRunId ||
+        chunkIndex >= chunks.length
+      ) {
+
+        if (
+          runId === speechRunId &&
+          isSpeaking
+        ) {
+
+          finishSpeech();
+
+        }
+
+        return;
+
+      }
+
+
+      const sentence =
+        chunks[chunkIndex];
+
+
+      const utterance =
+        new SpeechSynthesisUtterance(
+          sentence
+        );
+
+
+      const selectedIndex =
+        parseInt(
+          voiceSelect.value,
+          10
+        );
+
+
+      if (
+        !isNaN(selectedIndex) &&
+        voices[selectedIndex]
+      ) {
+
+        utterance.voice =
+          voices[selectedIndex];
+
+        utterance.lang =
+          voices[selectedIndex].lang;
+
+      } else {
+
+        utterance.lang =
+          "en-US";
+
+      }
+
+
+      utterance.rate =
+        parseFloat(
+          speedControl.value
+        );
+
+
+      utterance.pitch = 1;
+
+      utterance.volume = 1;
+
+
+      const sentenceStart =
+        currentWordIndex;
+
+
+      utterance.onboundary =
+        function(event) {
+
+          if (
+            !isSpeaking ||
+            runId !== speechRunId
+          ) {
+            return;
+          }
+
+
+          if (
+            event.name === "word"
+          ) {
+
+            const globalIndex =
+              getGlobalWordIndex(
+                sentence,
+                event.charIndex
+              );
+
+
+            if (
+              globalIndex >= 0 &&
+              globalIndex < speechWords.length
+            ) {
+
+              highlightWord(
+                globalIndex
+              );
+
+            }
+
+          }
+
+        };
+
+
+      utterance.onstart =
+        function() {
+
+          speechStatus.textContent =
+            "Speaking...";
+
+          highlightWord(
+            sentenceStart
+          );
+
+        };
+
+
+      utterance.onend =
+        function() {
+
+          if (
+            !isSpeaking ||
+            runId !== speechRunId
+          ) {
+            return;
+          }
+
+
+          /*
+            Count the words in the sentence
+            so the next sentence begins at
+            the correct displayed word.
+          */
+
+          const sentenceWords =
+            sentence
+              .split(/\s+/)
+              .filter(Boolean);
+
+
+          currentWordIndex +=
+            sentenceWords.length;
+
+
+          speakChunks(
+            chunks,
+            chunkIndex + 1,
+            runId
+          );
+
+        };
+
+
+      utterance.onerror =
+        function(event) {
+
+          if (
+            event.error === "canceled" ||
+            event.error === "interrupted"
+          ) {
+            return;
+          }
+
+
+          if (
+            runId === speechRunId
+          ) {
+
+            isSpeaking = false;
+
+            speechStatus.textContent =
+              "The browser could not play the voice.";
+
+            playButton.disabled = false;
+            pauseButton.disabled = true;
+            stopButton.disabled = true;
+
+          }
+
+        };
+
+
+      window.speechSynthesis.speak(
+        utterance
+      );
+
+    }
+
+
+    playButton.addEventListener(
+      "click",
+      function() {
+
+        if (!speechSupported) {
+
+          speechStatus.textContent =
+            "Text-to-speech is not supported in this browser.";
+
+          return;
+
+        }
+
+
+        const text =
+          scriptInput.value.trim();
+
+
+        if (!text) {
+
+          speechStatus.textContent =
+            "Please enter a script first.";
+
+          return;
+
+        }
+
+
+        window.speechSynthesis.cancel();
+
+
+        displayScript(text);
+
+
+        const chunks =
+          buildSpeechChunks(text);
+
+
+        if (chunks.length === 0) {
+
+          speechStatus.textContent =
+            "There is no readable text in the script.";
+
+          return;
+
+        }
+
+
+        speechRunId++;
+
+        currentWordIndex = 0;
+
+        isSpeaking = true;
+
+        isPaused = false;
+
+
+        playButton.disabled = true;
+        pauseButton.disabled = false;
+        stopButton.disabled = false;
+
+
+        speechStatus.textContent =
+          "Starting...";
+
+
+        speakChunks(
+          chunks,
+          0,
+          speechRunId
+        );
+
+      }
+    );
+
+
+    /* =====================================================
+       PAUSE / RESUME
+       ===================================================== */
+
+    pauseButton.addEventListener(
+      "click",
+      function() {
+
+        if (
+          !isSpeaking ||
+          !speechSupported
+        ) {
+          return;
+        }
+
+
+        if (!isPaused) {
+
+          window.speechSynthesis.pause();
+
+          isPaused = true;
+
+          pauseButton.textContent =
+            "▶ RESUME";
+
+          speechStatus.textContent =
+            "Paused.";
+
+        } else {
+
+          window.speechSynthesis.resume();
+
+          isPaused = false;
+
+          pauseButton.textContent =
+            "⏸ PAUSE";
+
+          speechStatus.textContent =
+            "Speaking...";
+
+        }
+
+      }
+    );
+
+
+    /* =====================================================
+       STOP SPEECH
+       ===================================================== */
+
+    function stopSpeech() {
+
+      speechRunId++;
+
+      if (speechSupported) {
+
+        window.speechSynthesis.cancel();
+
+      }
+
+
+      isSpeaking = false;
+
+      isPaused = false;
+
+      currentWordIndex = 0;
+
+
+      clearWordHighlights();
+
+
+      playButton.disabled = false;
+      pauseButton.disabled = true;
+      stopButton.disabled = true;
+
+
+      pauseButton.textContent =
+        "⏸ PAUSE";
+
+    }
+
+
+    stopButton.addEventListener(
+      "click",
+      function() {
+
+        stopSpeech();
+
+        speechStatus.textContent =
+          "Stopped.";
+
+      }
+    );
+
+
+    function finishSpeech() {
+
+      isSpeaking = false;
+
+      isPaused = false;
+
+
+      playButton.disabled = false;
+      pauseButton.disabled = true;
+      stopButton.disabled = true;
+
+
+      pauseButton.textContent =
+        "⏸ PAUSE";
+
+
+      speechStatus.textContent =
+        "Finished.";
+
+    }
+
+
+    /* =====================================================
+       RECORDING SUPPORT
+       ===================================================== */
+
+    function getSupportedMimeType() {
+
+      if (
+        typeof MediaRecorder ===
+        "undefined"
+      ) {
+
+        return "";
+
+      }
+
+
+      const types = [
+        "audio/webm;codecs=opus",
+        "audio/webm",
+        "audio/ogg;codecs=opus",
+        "audio/mp4"
+      ];
+
+
+      for (
+        let i = 0;
+        i < types.length;
+        i++
+      ) {
+
+        if (
+          MediaRecorder.isTypeSupported(
+            types[i]
+          )
+        ) {
+
+          return types[i];
+
+        }
+
+      }
+
+
+      return "";
+
+    }
+
+
+    /* =====================================================
+       START RECORDING
        ===================================================== */
 
     recordButton.addEventListener(
@@ -1233,7 +1956,7 @@
         ) {
 
           recordingStatus.textContent =
-            "Microphone recording is not supported in this browser.";
+            "Microphone recording is not supported by this browser.";
 
           return;
 
@@ -1246,7 +1969,7 @@
         ) {
 
           recordingStatus.textContent =
-            "Audio recording is not supported in this browser.";
+            "Recording is not supported by this browser.";
 
           return;
 
@@ -1255,12 +1978,11 @@
 
         try {
 
-          recordingStream =
-            await navigator.mediaDevices.getUserMedia(
-              {
+          const stream =
+            await navigator.mediaDevices
+              .getUserMedia({
                 audio: true
-              }
-            );
+              });
 
 
           recordedChunks = [];
@@ -1268,65 +1990,22 @@
           recordingBlob = null;
 
 
-          /*
-            Find a format supported by the
-            current browser.
-          */
-
-          let mimeType = "";
+          const mimeType =
+            getSupportedMimeType();
 
 
-          const possibleTypes = [
-
-            "audio/webm;codecs=opus",
-            "audio/webm",
-            "audio/mp4",
-            "audio/ogg;codecs=opus"
-
-          ];
-
-
-          for (
-            let i = 0;
-            i < possibleTypes.length;
-            i++
-          ) {
-
-            if (
-              MediaRecorder.isTypeSupported(
-                possibleTypes[i]
-              )
-            ) {
-
-              mimeType =
-                possibleTypes[i];
-
-              break;
-
-            }
-
-          }
-
-
-          if (mimeType) {
-
-            mediaRecorder =
-              new MediaRecorder(
-                recordingStream,
-                {
-                  mimeType:
-                    mimeType
-                }
-              );
-
-          } else {
-
-            mediaRecorder =
-              new MediaRecorder(
-                recordingStream
-              );
-
-          }
+          mediaRecorder =
+            mimeType
+              ? new MediaRecorder(
+                  stream,
+                  {
+                    mimeType:
+                      mimeType
+                  }
+                )
+              : new MediaRecorder(
+                  stream
+                );
 
 
           mediaRecorder.ondataavailable =
@@ -1349,7 +2028,7 @@
           mediaRecorder.onstop =
             function() {
 
-              const actualType =
+              const type =
                 mediaRecorder.mimeType ||
                 "audio/webm";
 
@@ -1358,22 +2037,31 @@
                 new Blob(
                   recordedChunks,
                   {
-                    type: actualType
+                    type: type
                   }
                 );
 
 
-              const audioURL =
+              if (recordingURL) {
+
+                URL.revokeObjectURL(
+                  recordingURL
+                );
+
+              }
+
+
+              recordingURL =
                 URL.createObjectURL(
                   recordingBlob
                 );
 
 
-              audioPlayer.src =
-                audioURL;
+              recordingPlayer.src =
+                recordingURL;
 
-              audioPlayer.hidden =
-                false;
+              recordingPlayer.style.display =
+                "block";
 
 
               downloadRecordingButton.disabled =
@@ -1381,37 +2069,16 @@
 
 
               recordingStatus.textContent =
-                "Recording ready. You can play or download it.";
+                "Recording ready. You can listen or download it.";
 
 
-              if (recordingStream) {
+              stream
+                .getTracks()
+                .forEach(function(track) {
 
-                recordingStream
-                  .getTracks()
-                  .forEach(
-                    function(track) {
+                  track.stop();
 
-                      track.stop();
-
-                    }
-                  );
-
-              }
-
-            };
-
-
-          mediaRecorder.onerror =
-            function() {
-
-              recordingStatus.textContent =
-                "There was a problem recording the audio.";
-
-              recordButton.disabled =
-                false;
-
-              stopRecordingButton.disabled =
-                true;
+                });
 
             };
 
@@ -1419,8 +2086,7 @@
           mediaRecorder.start();
 
 
-          recordButton.disabled =
-            true;
+          recordButton.disabled = true;
 
           stopRecordingButton.disabled =
             false;
@@ -1429,24 +2095,13 @@
             true;
 
 
-          audioPlayer.hidden =
-            true;
-
-
           recordingStatus.textContent =
-            "🔴 Recording...";
-
+            "Recording... Speak now.";
 
         } catch (error) {
 
           recordingStatus.textContent =
-            "Microphone permission was not granted.";
-
-          recordButton.disabled =
-            false;
-
-          stopRecordingButton.disabled =
-            true;
+            "Microphone access was not allowed.";
 
         }
 
@@ -1465,7 +2120,7 @@
         if (
           mediaRecorder &&
           mediaRecorder.state !==
-          "inactive"
+            "inactive"
         ) {
 
           mediaRecorder.stop();
@@ -1491,25 +2146,39 @@
       "click",
       function() {
 
-        if (!recordingBlob) {
+        if (
+          !recordingBlob ||
+          !recordingURL
+        ) {
+
+          recordingStatus.textContent =
+            "There is no recording to download.";
 
           return;
 
         }
 
 
-        const url =
-          URL.createObjectURL(
-            recordingBlob
-          );
+        let extension =
+          "webm";
 
 
-        const extension =
-          recordingBlob.type.includes("mp4")
-            ? "mp4"
-            : recordingBlob.type.includes("ogg")
-              ? "ogg"
-              : "webm";
+        const type =
+          recordingBlob.type
+            .toLowerCase();
+
+
+        if (type.includes("ogg")) {
+
+          extension = "ogg";
+
+        } else if (
+          type.includes("mp4")
+        ) {
+
+          extension = "mp4";
+
+        }
 
 
         const link =
@@ -1517,10 +2186,11 @@
 
 
         link.href =
-          url;
+          recordingURL;
+
 
         link.download =
-          "stance-speak-recording." +
+          "stance-speak-practice." +
           extension;
 
 
@@ -1528,20 +2198,23 @@
 
         link.click();
 
-        document.body.removeChild(link);
+        link.remove();
 
 
-        URL.revokeObjectURL(url);
+        recordingStatus.textContent =
+          "Recording downloaded.";
 
       }
     );
 
 
     /* =====================================================
-       INITIAL STATE
+       INITIALIZE
        ===================================================== */
 
     displayScript("");
+
+    renderSavedScripts();
 
   </script>
 
