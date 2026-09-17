@@ -1593,11 +1593,22 @@
             event.name === "word"
           ) {
 
-            const globalIndex =
-              getGlobalWordIndex(
-                sentence,
-                event.charIndex
-              );
+            const textBefore =
+  sentence.substring(
+    0,
+    event.charIndex
+  );
+
+const wordsBefore =
+  textBefore
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .length;
+
+const globalIndex =
+  sentenceStart +
+  wordsBefore;
 
 
             if (
