@@ -1578,54 +1578,56 @@
         currentWordIndex;
 
 
-      utterance.onboundary =
+            utterance.onboundary =
         function(event) {
 
           if (
-            !isSpeaking ||
-            runId !== speechRunId
+            event.name !== "word"
           ) {
             return;
           }
 
 
+          /*
+            This is the same word-boundary method
+            used in the original working version.
+
+            charIndex tells us where the current
+            spoken word begins inside this sentence.
+          */
+
+          const textBefore =
+            sentence.substring(
+              0,
+              event.charIndex
+            );
+
+
+          const wordIndexInSentence =
+            textBefore
+              .trim()
+              .split(/\s+/)
+              .filter(Boolean)
+              .length;
+
+
+          const globalIndex =
+            sentenceStart +
+            wordIndexInSentence;
+
+
           if (
-            event.name === "word"
+            globalIndex >= 0 &&
+            globalIndex < speechWords.length
           ) {
 
-            const textBefore =
-  sentence.substring(
-    0,
-    event.charIndex
-  );
-
-const wordsBefore =
-  textBefore
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean)
-    .length;
-
-const globalIndex =
-  sentenceStart +
-  wordsBefore;
-
-
-            if (
-              globalIndex >= 0 &&
-              globalIndex < speechWords.length
-            ) {
-
-              highlightWord(
-                globalIndex
-              );
-
-            }
+            highlightWord(
+              globalIndex
+            );
 
           }
 
         };
-
 
       utterance.onstart =
         function() {
