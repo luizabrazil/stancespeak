@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Listen & Read | Stance Speak</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f7f7f5;
+      color: #222;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 35px 20px 60px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 38px;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: #666;
+      font-size: 18px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 220px;
+      padding: 15px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-family: Arial, sans-serif;
+      font-size: 18px;
+      line-height: 1.6;
+      resize: vertical;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #777;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    button,
+    select {
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      padding: 11px 18px;
+      border-radius: 8px;
+    }
+
+    button {
+      border: none;
+      background: #222;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.8;
+    }
+
+    button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    select {
+      border: 1px solid #ccc;
+      background: white;
+    }
+
+    .speed {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .speed label {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .reading-area {
+      font-size: 23px;
+      line-height: 1.9;
+    }
+
+    .reading-area span {
+      padding: 2px 3px;
+      border-radius: 4px;
+      transition: background-color 0.1s;
+    }
+
+    .reading-area span.active {
+      background-color: yellow;
+    }
+
+    .message {
+      margin-top: 15px;
+      color: #666;
+      font-size: 15px;
+    }
+
+    .back {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      background: #222;
+      color: white;
+      text-decoration: none;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 30px;
+      }
+
+      .reading-area {
+        font-size: 20px;
+      }
+
+      button,
+      select {
+        width: 100%;
+      }
+
+      .speed {
+        width: 100%;
+      }
+
+      .speed select {
+        flex: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <header>
+      <h1>LISTEN & READ</h1>
+      <p class="subtitle">Listen to your script and follow the words.</p>
+    </header>
+
+
+    <!-- SCRIPT INPUT -->
+
+    <div class="card">
+
+      <label for="scriptInput">
+        Paste your script here:
+      </label>
+
+      <textarea
+        id="scriptInput"
+        placeholder="Paste your script here..."
+      ></textarea>
+
+    </div>
+
+
+    <!-- CONTROLS -->
+
+    <div class="card">
+
+      <div class="controls">
+
+        <button id="playButton">
+          ▶ PLAY
+        </button>
+
+        <button id="pauseButton">
+          ⏸ PAUSE
+        </button>
+
+        <button id="stopButton">
+          ■ STOP
+        </button>
+
+        <div class="speed">
+
+          <label for="speedSelect">
+            Speed:
+          </label>
+
+          <select id="speedSelect">
+            <option value="0.7">0.7×</option>
+            <option value="0.8">0.8×</option>
+            <option value="0.9" selected>0.9×</option>
+            <option value="1">1×</option>
+            <option value="1.1">1.1×</option>
+            <option value="1.2">1.2×</option>
+          </select>
+
+        </div>
+
+      </div>
+
+      <p class="message" id="message">
+        Paste your script and press PLAY.
+      </p>
+
+    </div>
+
+
+    <!-- READING AREA -->
+
+    <div class="card">
+
+      <div
+        id="readingArea"
+        class="reading-area"
+      >
+        Your script will appear here.
+      </div>
+
+    </div>
+
+
+    <a
+      class="back"
+      href="index.html"
+    >
+      ← BACK
+    </a>
+
+  </div>
+
+
+  <script>
+
+    const scriptInput = document.getElementById("scriptInput");
+    const readingArea = document.getElementById("readingArea");
+
+    const playButton = document.getElementById("playButton");
+    const pauseButton = document.getElementById("pauseButton");
+    const stopButton = document.getElementById("stopButton");
+
+    const speedSelect = document.getElementById("speedSelect");
+    const message = document.getElementById("message");
+
+
+    let currentText = "";
+    let words = [];
+    let utterance = null;
+
+
+    /*
+      Turn the text into individual clickable/highlightable words.
+    */
+
+    function displayText(text) {
+
+      readingArea.innerHTML = "";
+
+      if (!text.trim()) {
+
+        readingArea.textContent =
+          "Your script will appear here.";
+
+        return;
+      }
+
+      words = text.trim().split(/\s+/);
+
+      words.forEach(function(word, index) {
+
+        const span = document.createElement("span");
+
+        span.textContent = word + " ";
+
+        span.dataset.index = index;
+
+        readingArea.appendChild(span);
+
+      });
+
+    }
+
+
+    /*
+      Remove all highlights.
+    */
+
+    function clearHighlight() {
+
+      const spans =
+        readingArea.querySelectorAll("span");
+
+      spans.forEach(function(span) {
+
+        span.classList.remove("active");
+
+      });
+
+    }
+
+
+    /*
+      Highlight the word currently being spoken.
+    */
+
+    function highlightWord(index) {
+
+      clearHighlight();
+
+      const span =
+        readingArea.querySelector(
+          'span[data-index="' + index + '"]'
+        );
+
+      if (span) {
+
+        span.classList.add("active");
+
+        span.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+
+      }
+
+    }
+
+
+    /*
+      PLAY
+    */
+
+    playButton.addEventListener("click", function() {
+
+      const text =
+        scriptInput.value.trim();
+
+      if (!text) {
+
+        message.textContent =
+          "Please paste your script first.";
+
+        return;
+      }
+
+
+      /*
+        Stop anything currently playing.
+      */
+
+      speechSynthesis.cancel();
+
+
+      currentText = text;
+
+      displayText(currentText);
+
+
+      utterance =
+        new SpeechSynthesisUtterance(currentText);
+
+
+      /*
+        English voice.
+      */
+
+      utterance.lang = "en-US";
+
+
+      /*
+        Reading speed.
+      */
+
+      utterance.rate =
+        Number(speedSelect.value);
+
+
+      /*
+        Browser speech engines report
+        where the spoken text currently is.
+      */
+
+      utterance.onboundary =
+        function(event) {
+
+          if (event.name !== "word") {
+            return;
+          }
+
+
+          const textBefore =
+            currentText.substring(
+              0,
+              event.charIndex
+            );
+
+
+          const wordIndex =
+            textBefore
+              .trim()
+              .split(/\s+/)
+              .length - 1;
+
+
+          highlightWord(wordIndex);
+
+        };
+
+
+      utterance.onstart =
+        function() {
+
+          message.textContent =
+            "Listening...";
+
+        };
+
+
+      utterance.onend =
+        function() {
+
+          clearHighlight();
+
+          message.textContent =
+            "Finished.";
+
+        };
+
+
+      utterance.onerror =
+        function() {
+
+          clearHighlight();
+
+          message.textContent =
+            "The browser could not play the speech.";
+
+        };
+
+
+      speechSynthesis.speak(utterance);
+
+    });
+
+
+    /*
+      PAUSE
+    */
+
+    pauseButton.addEventListener("click", function() {
+
+      if (speechSynthesis.speaking) {
+
+        speechSynthesis.pause();
+
+        message.textContent =
+          "Paused.";
+
+      }
+
+    });
+
+
+    /*
+      STOP
+    */
+
+    stopButton.addEventListener("click", function() {
+
+      speechSynthesis.cancel();
+
+      clearHighlight();
+
+      message.textContent =
+        "Stopped.";
+
+    });
+
+
+    /*
+      If the teacher types or pastes text,
+      update the reading area automatically.
+    */
+
+    scriptInput.addEventListener(
+      "input",
+      function() {
+
+        displayText(
+          scriptInput.value
+        );
+
+      }
+    );
+
+
+    /*
+      If the speed changes while speech is playing,
+      stop the current reading so the new
+      speed can be used when PLAY is pressed.
+    */
+
+    speedSelect.addEventListener(
+      "change",
+      function() {
+
+        if (speechSynthesis.speaking) {
+
+          speechSynthesis.cancel();
+
+          clearHighlight();
+
+          message.textContent =
+            "Speed changed. Press PLAY to continue.";
+
+        }
+
+      }
+    );
+
+
+  </script>
+
+</body>
+</html>
