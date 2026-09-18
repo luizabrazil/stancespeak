@@ -111,8 +111,47 @@
       background: #666;
     }
 
-    .danger {
-      background: #8a3030;
+    .level4-order-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .level4-order-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      background: #fff;
+      cursor: grab;
+      user-select: none;
+    }
+
+    .level4-order-item:active {
+      cursor: grabbing;
+    }
+
+    .level4-order-item.dragging {
+      opacity: 0.5;
+    }
+
+    .level4-number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-weight: 700;
+      background: #eee;
+    }
+
+    .level4-sentence {
+      flex: 1;
+      line-height: 1.5;
     }
 
     .button-row {
@@ -232,6 +271,87 @@
       display: none !important;
     }
 
+    .level-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 20px;
+    }
+
+    .level-tab {
+      background: white;
+      color: #222;
+      border: 2px solid #ccc;
+      padding: 9px 14px;
+    }
+
+    .level-tab.active {
+      background: #222;
+      color: white;
+      border-color: #222;
+    }
+
+    .level-tab.locked {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .level-status {
+      font-size: 14px;
+      font-weight: normal;
+      display: block;
+      margin-top: 3px;
+    }
+
+    .answer-input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      font-size: 18px;
+      font-family: Arial, sans-serif;
+      margin-top: 10px;
+    }
+
+    .answer-input:focus {
+      outline: none;
+      border-color: #777;
+    }
+
+    .answer-input.correct {
+      border-color: #222;
+      background: #e8e8e8;
+    }
+
+    .answer-input.incorrect {
+      border-color: #999;
+      background: #f1f1f1;
+    }
+
+    .reconstruct {
+      width: 100%;
+      min-height: 120px;
+      margin-top: 10px;
+    }
+
+    .completion-box {
+      padding: 22px;
+      border: 2px solid #222;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      background: #fafafa;
+    }
+
+    .completion-box h3 {
+      margin-top: 0;
+    }
+
+    .small-note {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
     @media (max-width: 650px) {
       h1 {
         font-size: 30px;
@@ -267,7 +387,6 @@
       </p>
     </header>
 
-
     <!-- SCRIPT INPUT -->
 
     <div class="card" id="scriptCard">
@@ -283,16 +402,8 @@
 
       <div class="button-row">
 
-        <button id="generateButton">
+        <button id="generateButton" type="button">
           GENERATE PRACTICE
-        </button>
-
-        <button
-          id="continueButton"
-          class="secondary"
-          type="button"
-        >
-          CONTINUE SAVED PRACTICE
         </button>
 
       </div>
@@ -309,14 +420,11 @@
 
     <div class="card" id="practiceArea">
 
-      <h2 class="level-title">
-        LEVEL 1 — FILL IN THE BLANKS
-      </h2>
+      <div id="levelNav" class="level-nav"></div>
 
-      <p class="instructions">
-        Choose the word that belongs in each blank.
-        Read the complete sentence after answering.
-      </p>
+      <h2 id="levelTitle" class="level-title"></h2>
+
+      <p id="levelInstructions" class="instructions"></p>
 
       <div
         id="progressBox"
@@ -325,21 +433,27 @@
 
       <div id="questions"></div>
 
+      <div
+        id="completionBox"
+        class="completion-box hidden"
+      ></div>
+
       <div class="button-row">
 
         <button
-          id="saveButton"
+          id="nextLevelButton"
           type="button"
+          class="hidden"
         >
-          SAVE PROGRESS
+          NEXT LEVEL
         </button>
 
         <button
-          id="restartButton"
-          class="secondary"
+          id="tryAgainButton"
           type="button"
+          class="hidden"
         >
-          START OVER
+          TRY ANOTHER PART
         </button>
 
       </div>
@@ -370,7 +484,7 @@
 
     /*
       =====================================================
-      PRACTICE YOUR SCRIPT
+      PRACTICE YOUR SCRIPT — LEVELS 1–4
       =====================================================
 
       Everything runs in the browser.
@@ -380,12 +494,40 @@
       No API.
       No database.
 
-      Saved progress uses localStorage.
+      Progress is stored locally on this device.
+
+      IMPORTANT:
+      listen.html is intentionally not used or modified.
     */
 
 
-    const STORAGE_KEY =
-      "stanceSpeakPracticeProgress";
+    const LEVELS = {
+
+      1: {
+        title: "LEVEL 1 — FILL IN THE BLANKS",
+        instructions:
+          "Choose the word that belongs in each blank. Read the complete sentence after answering."
+      },
+
+      2: {
+        title: "LEVEL 2 — GUIDED RECALL",
+        instructions:
+          "Choose the missing words. There are more blanks and less support than in Level 1."
+      },
+
+      3: {
+        title: "LEVEL 3 — REDUCED SUPPORT",
+        instructions:
+          "Type the missing words. Think carefully and use the script as your reference if needed."
+      },
+
+      4: {
+        title: "LEVEL 4 — INDEPENDENT PRACTICE",
+        instructions:
+          "Rebuild each sentence from memory. Type the complete sentence."
+      }
+
+    };
 
 
     const scriptInput =
@@ -393,9 +535,6 @@
 
     const generateButton =
       document.getElementById("generateButton");
-
-    const continueButton =
-      document.getElementById("continueButton");
 
     const savedMessage =
       document.getElementById("savedMessage");
@@ -409,17 +548,30 @@
     const progressBox =
       document.getElementById("progressBox");
 
-    const saveButton =
-      document.getElementById("saveButton");
+    const nextLevelButton =
+      document.getElementById("nextLevelButton");
 
-    const restartButton =
-      document.getElementById("restartButton");
+
+    const tryAgainButton =
+      document.getElementById("tryAgainButton");
 
     const scriptPreviewCard =
       document.getElementById("scriptPreviewCard");
 
     const scriptPreview =
       document.getElementById("scriptPreview");
+
+    const levelNav =
+      document.getElementById("levelNav");
+
+    const levelTitle =
+      document.getElementById("levelTitle");
+
+    const levelInstructions =
+      document.getElementById("levelInstructions");
+
+    const completionBox =
+      document.getElementById("completionBox");
 
 
     let currentPractice = null;
@@ -430,6 +582,7 @@
       UTILITY FUNCTIONS
       =====================================================
     */
+
 
     function shuffle(array) {
 
@@ -488,14 +641,32 @@
     }
 
 
+    function normalizeAnswer(answer) {
+
+      return normalizeWord(
+        String(answer || "").trim()
+      ).toLowerCase();
+
+    }
+
+
+    function normalizeSentence(text) {
+
+      return String(text || "")
+        .trim()
+        .replace(/\s+/g, " ")
+        .replace(/[.!?]+$/g, "")
+        .toLowerCase();
+
+    }
+
+
     /*
       =====================================================
       CHOOSING WORDS TO REMOVE
       =====================================================
-
-      We prefer meaningful words rather than very short
-      words such as A, I, IN, OF, TO, etc.
     */
+
 
     function isGoodBlankWord(word) {
 
@@ -506,6 +677,7 @@
         clean.toLowerCase();
 
       const commonShortWords = [
+
         "a",
         "an",
         "the",
@@ -526,19 +698,27 @@
         "he",
         "she",
         "it"
+
       ];
+
 
       if (
         clean.length < 3
       ) {
+
         return false;
+
       }
+
 
       if (
         commonShortWords.includes(lower)
       ) {
+
         return false;
+
       }
+
 
       return true;
 
@@ -547,11 +727,12 @@
 
     /*
       =====================================================
-      CREATE QUESTIONS
+      SPLIT SCRIPT INTO SENTENCES
       =====================================================
     */
 
-    function generateQuestions(script) {
+
+    function getSentences(script) {
 
       const lines =
         script
@@ -559,14 +740,15 @@
           .split("\n");
 
 
-      const questions = [];
+      const sentences = [];
 
 
       lines.forEach(
-        function(line) {
+        function(line, lineIndex) {
 
           const trimmed =
             line.trim();
+
 
           if (!trimmed) {
             return;
@@ -574,252 +756,281 @@
 
 
           /*
-            Keep the original sentence structure.
+            Preserve each meaningful line as a unit.
+
+            This is important for podcast scripts,
+            where one student may paste several separate
+            lines that should be practiced independently.
           */
 
-          const sentenceParts =
-            trimmed.match(
-              /[^.!?]+[.!?]+|[^.!?]+$/g
-            );
+          const tokens =
+            trimmed
+              .split(/\s+/)
+              .filter(Boolean);
 
 
-          if (!sentenceParts) {
-            return;
+          if (
+            tokens.length >= 3
+          ) {
+
+            sentences.push({
+              sentence: trimmed,
+              tokens: tokens,
+              originalIndex: lineIndex
+            });
+
           }
 
-
-          sentenceParts.forEach(
-            function(sentence) {
-
-              const tokens =
-                sentence
-                  .split(/\s+/)
-                  .filter(Boolean);
+        }
+      );
 
 
-              if (
-                tokens.length < 3
-              ) {
-                return;
-              }
+      return sentences;
+
+    }
 
 
-              const candidates =
-                tokens
-                  .map(
-                    function(token, index) {
+    /*
+      =====================================================
+      SELECT PRACTICE SET
+      =====================================================
+    */
 
-                      return {
-                        token: token,
-                        index: index,
-                        clean: normalizeWord(token)
-                      };
+    function selectPracticeSet(sentences) {
 
-                    }
-                  )
-                  .filter(
-                    function(item) {
+      if (
+        !sentences ||
+        sentences.length === 0
+      ) {
 
-                      return isGoodBlankWord(
-                        item.clean
-                      );
+        return [];
 
-                    }
+      }
+
+
+      const total =
+        sentences.length;
+
+
+      const count =
+        Math.min(
+          6,
+          total
+        );
+
+
+      return sentences.slice(
+        0,
+        count
+      );
+
+    }
+
+
+
+    /*
+      =====================================================
+      CREATE LEVEL 1
+      =====================================================
+    */
+
+
+    function createLevel1(sentences, script) {
+
+      const questions = [];
+
+
+      sentences.forEach(
+        function(item) {
+
+          const candidates =
+            item.tokens
+              .map(
+                function(token, index) {
+
+                  return {
+                    token: token,
+                    index: index,
+                    clean: normalizeWord(token)
+                  };
+
+                }
+              )
+              .filter(
+                function(candidate) {
+
+                  return isGoodBlankWord(
+                    candidate.clean
                   );
-
-
-              if (
-                candidates.length === 0
-              ) {
-                return;
-              }
-
-
-              /*
-                Initially remove only ONE word
-                from each sentence.
-
-                This keeps Level 1 accessible.
-              */
-
-              const chosen =
-                candidates[
-                  Math.floor(
-                    Math.random() *
-                    candidates.length
-                  )
-                ];
-
-
-              const correct =
-                chosen.clean;
-
-
-              /*
-                Create distractors from other words
-                in the script.
-
-                They are deliberately simple and
-                different from the answer.
-              */
-
-              const possibleDistractors =
-                getWords(script)
-                  .filter(
-                    function(word) {
-
-                      const clean =
-                        normalizeWord(word);
-
-                      return (
-                        clean &&
-                        clean.toLowerCase() !==
-                          correct.toLowerCase() &&
-                        clean.length >= 3
-                      );
-
-                    }
-                  );
-
-
-              const uniqueDistractors =
-                [];
-
-
-              possibleDistractors.forEach(
-                function(word) {
-
-                  const clean =
-                    normalizeWord(word);
-
-                  const alreadyUsed =
-                    uniqueDistractors.some(
-                      function(existing) {
-
-                        return (
-                          existing.toLowerCase() ===
-                          clean.toLowerCase()
-                        );
-
-                      }
-                    );
-
-
-                  if (
-                    !alreadyUsed &&
-                    clean.toLowerCase() !==
-                      correct.toLowerCase()
-                  ) {
-
-                    uniqueDistractors.push(
-                      clean
-                    );
-
-                  }
 
                 }
               );
 
 
-              /*
-                Prefer distractors that are not
-                identical to the correct word.
-              */
-
-              const distractors =
-                shuffle(
-                  uniqueDistractors
-                ).slice(0, 2);
+          if (
+            candidates.length === 0
+          ) {
+            return;
+          }
 
 
-              /*
-                If the script is very short, there may
-                not be two different words available.
-
-                In that case, use simple generic
-                distractors.
-              */
-
-              const fallbackWords = [
-                "COUNTRY",
-                "PEOPLE",
-                "TRADITIONAL",
-                "FAMILY",
-                "SCHOOL"
-              ];
+          const chosen =
+            candidates[
+              Math.floor(
+                Math.random() *
+                candidates.length
+              )
+            ];
 
 
-              for (
-                let i = distractors.length;
-                i < 2;
-                i++
-              ) {
+          const correct =
+            chosen.clean;
 
-                const fallback =
-                  fallbackWords[i];
 
-                if (
-                  fallback.toLowerCase() !==
-                    correct.toLowerCase() &&
-                  !distractors.some(
-                    function(item) {
+          const possibleDistractors =
+            getWords(script)
+              .filter(
+                function(word) {
 
-                      return (
-                        item.toLowerCase() ===
-                        fallback.toLowerCase()
-                      );
+                  const clean =
+                    normalizeWord(word);
 
-                    }
-                  )
-                ) {
-
-                  distractors.push(
-                    fallback
+                  return (
+                    clean &&
+                    clean.toLowerCase() !==
+                      correct.toLowerCase() &&
+                    clean.length >= 3
                   );
 
                 }
+              );
+
+
+          const uniqueDistractors = [];
+
+
+          possibleDistractors.forEach(
+            function(word) {
+
+              const clean =
+                normalizeWord(word);
+
+
+              const alreadyUsed =
+                uniqueDistractors.some(
+                  function(existing) {
+
+                    return (
+                      existing.toLowerCase() ===
+                      clean.toLowerCase()
+                    );
+
+                  }
+                );
+
+
+              if (
+                !alreadyUsed &&
+                clean.toLowerCase() !==
+                  correct.toLowerCase()
+              ) {
+
+                uniqueDistractors.push(
+                  clean
+                );
 
               }
 
-
-              const choices =
-                shuffle([
-                  correct,
-                  distractors[0],
-                  distractors[1]
-                ]);
-
-
-              questions.push({
-
-                originalSentence:
-                  sentence,
-
-                tokens:
-                  tokens,
-
-                blankIndex:
-                  chosen.index,
-
-                correct:
-                  correct,
-
-                choices:
-                  choices,
-
-                answered:
-                  false,
-
-                selected:
-                  null,
-
-                correctAnswer:
-                  false
-
-              });
-
             }
           );
+
+
+          const distractors =
+            shuffle(
+              uniqueDistractors
+            ).slice(0, 2);
+
+
+          const fallbackWords = [
+
+            "COUNTRY",
+            "PEOPLE",
+            "TRADITIONAL",
+            "FAMILY",
+            "SCHOOL"
+
+          ];
+
+
+          for (
+            let i = distractors.length;
+            i < 2;
+            i++
+          ) {
+
+            const fallback =
+              fallbackWords[i];
+
+
+            if (
+              fallback &&
+              fallback.toLowerCase() !==
+                correct.toLowerCase() &&
+              !distractors.some(
+                function(item) {
+
+                  return (
+                    item.toLowerCase() ===
+                    fallback.toLowerCase()
+                  );
+
+                }
+              )
+            ) {
+
+              distractors.push(
+                fallback
+              );
+
+            }
+
+          }
+
+
+          questions.push({
+
+            originalSentence:
+              item.sentence,
+
+            tokens:
+              item.tokens,
+
+            blankIndexes:
+              [chosen.index],
+
+            correctWords:
+              [correct],
+
+            choices:
+              shuffle([
+                correct,
+                distractors[0],
+                distractors[1]
+              ]),
+
+            answers:
+              [null],
+
+            answered:
+              false,
+
+            correctAnswer:
+              false,
+
+            lastAttemptCorrect:
+              null
+
+          });
 
         }
       );
@@ -832,16 +1043,2234 @@
 
     /*
       =====================================================
-      DISPLAY PRACTICE
+      CREATE LEVEL 2
       =====================================================
     */
+
+
+    function createLevel2(sentences) {
+
+      const questions = [];
+
+
+      sentences.forEach(
+        function(item) {
+
+          const candidates =
+            item.tokens
+              .map(
+                function(token, index) {
+
+                  return {
+                    token: token,
+                    index: index,
+                    clean: normalizeWord(token)
+                  };
+
+                }
+              )
+              .filter(
+                function(candidate) {
+
+                  return isGoodBlankWord(
+                    candidate.clean
+                  );
+
+                }
+              );
+
+
+          if (
+            candidates.length < 2
+          ) {
+            return;
+          }
+
+
+          const selectedCandidates =
+            shuffle(candidates)
+              .slice(
+                0,
+                Math.min(2, candidates.length)
+              );
+
+
+          const blankIndexes =
+            selectedCandidates
+              .map(
+                function(candidate) {
+                  return candidate.index;
+                }
+              )
+              .sort(
+                function(a, b) {
+                  return a - b;
+                }
+              );
+
+
+          const correctWords =
+            blankIndexes.map(
+              function(index) {
+
+                return normalizeWord(
+                  item.tokens[index]
+                );
+
+              }
+            );
+
+
+          const allWords =
+            getWords(
+              sentences
+                .map(function(sentenceItem) {
+                  return sentenceItem.sentence;
+                })
+                .join(" ")
+            );
+
+
+          const distractors = [];
+
+
+          shuffle(allWords).forEach(
+            function(word) {
+
+              const clean =
+                normalizeWord(word);
+
+
+              if (!clean) {
+                return;
+              }
+
+
+              const isCorrect =
+                correctWords.some(
+                  function(correct) {
+
+                    return (
+                      normalizeAnswer(correct) ===
+                      normalizeAnswer(clean)
+                    );
+
+                  }
+                );
+
+
+              const alreadyUsed =
+                distractors.some(
+                  function(existing) {
+
+                    return (
+                      normalizeAnswer(existing) ===
+                      normalizeAnswer(clean)
+                    );
+
+                  }
+                );
+
+
+              if (
+                !isCorrect &&
+                !alreadyUsed &&
+                distractors.length < 2
+              ) {
+
+                distractors.push(clean);
+
+              }
+
+            }
+          );
+
+
+          const choices =
+            shuffle(
+              correctWords.concat(
+                distractors
+              )
+            );
+
+
+          questions.push({
+
+            originalSentence:
+              item.sentence,
+
+            tokens:
+              item.tokens,
+
+            blankIndexes:
+              blankIndexes,
+
+            correctWords:
+              correctWords,
+
+            choices:
+              choices,
+
+            answers:
+              correctWords.map(function() {
+                return null;
+              }),
+
+            answered:
+              false,
+
+            correctAnswer:
+              false,
+
+            lastAttemptCorrect:
+              null
+
+          });
+
+        }
+      );
+
+
+      return questions;
+
+    }
+
+
+    /*
+      =====================================================
+      CREATE LEVEL 3
+      =====================================================
+    */
+
+
+    function createLevel3(sentences) {
+
+      const questions = [];
+
+
+      sentences.forEach(
+        function(item) {
+
+          const candidates =
+            item.tokens
+              .map(
+                function(token, index) {
+
+                  return {
+                    token: token,
+                    index: index,
+                    clean: normalizeWord(token)
+                  };
+
+                }
+              )
+              .filter(
+                function(candidate) {
+
+                  return isGoodBlankWord(
+                    candidate.clean
+                  );
+
+                }
+              );
+
+
+          if (
+            candidates.length === 0
+          ) {
+            return;
+          }
+
+
+          const numberOfBlanks =
+            Math.min(
+              3,
+              Math.max(
+                1,
+                Math.ceil(
+                  candidates.length / 2
+                )
+              )
+            );
+
+
+          const selectedCandidates =
+            shuffle(candidates)
+              .slice(
+                0,
+                numberOfBlanks
+              );
+
+
+          const blankIndexes =
+            selectedCandidates
+              .map(
+                function(candidate) {
+                  return candidate.index;
+                }
+              )
+              .sort(
+                function(a, b) {
+                  return a - b;
+                }
+              );
+
+
+          const correctWords =
+            blankIndexes.map(
+              function(index) {
+
+                return normalizeWord(
+                  item.tokens[index]
+                );
+
+              }
+            );
+
+
+          questions.push({
+
+            originalSentence:
+              item.sentence,
+
+            tokens:
+              item.tokens,
+
+            blankIndexes:
+              blankIndexes,
+
+            correctWords:
+              correctWords,
+
+            answers:
+              correctWords.map(function() {
+                return "";
+              }),
+
+            answered:
+              false,
+
+            correctAnswer:
+              false,
+
+            lastAttemptCorrect:
+              null
+
+          });
+
+        }
+      );
+
+
+      return questions;
+
+    }
+
+
+    /*
+      =====================================================
+      CREATE LEVEL 4
+      =====================================================
+    */
+
+
+    function createLevel4(sentences) {
+
+      if (
+        !sentences ||
+        sentences.length === 0
+      ) {
+
+        return [];
+
+      }
+
+
+      const items =
+        sentences.map(
+          function(item, index) {
+
+            return {
+              id:
+                "level4-" +
+                index +
+                "-" +
+                Date.now() +
+                "-" +
+                Math.random()
+                  .toString(36)
+                  .slice(2),
+
+              sentence:
+                item.sentence,
+
+              originalIndex:
+                item.originalIndex
+            };
+
+          }
+        );
+
+
+      const shuffled =
+        shuffle(
+          items.slice()
+        );
+
+
+      return [
+        {
+          type:
+            "ordering",
+
+          items:
+            items,
+
+          shuffledItems:
+            shuffled,
+
+          currentOrder:
+            shuffled.map(
+              function(item) {
+                return item.id;
+              }
+            ),
+
+          answer:
+            [],
+
+          answered:
+            false,
+
+          correctAnswer:
+            false,
+
+          lastAttemptCorrect:
+            null
+        }
+      ];
+
+    }
+
+
+
+    /*
+      =====================================================
+      CREATE COMPLETE PRACTICE
+      =====================================================
+    */
+
+
+    function createPractice(script) {
+
+      const sentences =
+        getSentences(script);
+
+
+      if (
+        sentences.length === 0
+      ) {
+
+        return null;
+
+      }
+
+
+      const practiceSet =
+        selectPracticeSet(
+          sentences
+        );
+
+
+      if (
+        practiceSet.length === 0
+      ) {
+
+        return null;
+
+      }
+
+
+      const level1 =
+        createLevel1(
+          practiceSet,
+          script
+        );
+
+
+      const level2 =
+        createLevel2(
+          practiceSet
+        );
+
+
+      const level3 =
+        createLevel3(
+          practiceSet
+        );
+
+
+      const level4 =
+        createLevel4(
+          practiceSet
+        );
+
+
+      if (
+        level1.length === 0 ||
+        level2.length === 0 ||
+        level3.length === 0 ||
+        level4.length === 0
+      ) {
+
+        return null;
+
+      }
+
+
+      return {
+
+        version: 2,
+
+        script:
+          script,
+
+        levels: {
+
+          1: level1,
+          2: level2,
+          3: level3,
+          4: level4
+
+        },
+
+        currentLevel:
+          1,
+
+        unlockedLevel:
+          1,
+
+        completedLevels: [],
+
+        createdAt:
+          new Date().toISOString(),
+
+        updatedAt:
+          new Date().toISOString()
+
+      };
+
+    }
+
+
+    /*
+      =====================================================
+      TRY AGAIN WITH A NEW PART OF THE SCRIPT
+      =====================================================
+    */
+
+    function tryAgainWithNewPracticeSet() {
+
+      if (
+        !currentPractice ||
+        !currentPractice.script
+      ) {
+
+        return;
+
+      }
+
+
+      tryAgainButton.classList.add(
+        "hidden"
+      );
+
+
+
+      const sentences =
+        getSentences(
+          currentPractice.script
+        );
+
+
+      const practiceSet =
+        selectPracticeSet(
+          sentences
+        );
+
+
+      if (
+        practiceSet.length === 0
+      ) {
+
+        return;
+
+      }
+
+
+      const level1 =
+        createLevel1(
+          practiceSet,
+          currentPractice.script
+        );
+
+
+      const level2 =
+        createLevel2(
+          practiceSet
+        );
+
+
+      const level3 =
+        createLevel3(
+          practiceSet
+        );
+
+
+      const level4 =
+        createLevel4(
+          practiceSet
+        );
+
+
+      if (
+        level1.length === 0 ||
+        level2.length === 0 ||
+        level3.length === 0 ||
+        level4.length === 0
+      ) {
+
+        return;
+
+      }
+
+
+      currentPractice.levels = {
+
+        1: level1,
+        2: level2,
+        3: level3,
+        4: level4
+
+      };
+
+
+      currentPractice.updatedAt =
+        new Date().toISOString();
+
+
+      renderPractice();
+
+    }
+
+
+    /*
+      =====================================================
+      STORAGE
+      =====================================================
+    */
+
+
+
+    /*
+      =====================================================
+      LEVEL COMPLETION
+      =====================================================
+    */
+
+
+    function isLevelComplete(level) {
+
+      if (
+        !currentPractice ||
+        !currentPractice.levels[level]
+      ) {
+
+        return false;
+
+      }
+
+
+      const questions =
+        currentPractice.levels[level];
+
+
+      if (
+        questions.length === 0
+      ) {
+
+        return false;
+
+      }
+
+
+      return questions.every(
+        function(question) {
+
+          return (
+            question.answered &&
+            question.correctAnswer
+          );
+
+        }
+      );
+
+    }
+
+
+    function updateUnlockedLevel() {
+
+      if (!currentPractice) {
+        return;
+      }
+
+
+      for (
+        let level = 1;
+        level <= 4;
+        level++
+      ) {
+
+        if (
+          isLevelComplete(level)
+        ) {
+
+          if (
+            !currentPractice.completedLevels.includes(
+              level
+            )
+          ) {
+
+            currentPractice.completedLevels.push(
+              level
+            );
+
+          }
+
+
+          if (
+            level < 4
+          ) {
+
+            currentPractice.unlockedLevel =
+              Math.max(
+                currentPractice.unlockedLevel,
+                level + 1
+              );
+
+          }
+
+        }
+
+      }
+
+
+      if (
+        currentPractice.unlockedLevel > 4
+      ) {
+
+        currentPractice.unlockedLevel =
+          4;
+
+      }
+
+    }
+
+
+    /*
+      =====================================================
+      LEVEL NAVIGATION
+      =====================================================
+    */
+
+
+    function renderLevelNavigation() {
+
+      levelNav.innerHTML =
+        "";
+
+
+      for (
+        let level = 1;
+        level <= 4;
+        level++
+      ) {
+
+        const button =
+          document.createElement("button");
+
+
+        button.type =
+          "button";
+
+
+        button.className =
+          "level-tab";
+
+
+                const unlocked =
+          true;
+
+
+        const completed =
+          currentPractice.completedLevels.includes(
+            level
+          );
+
+
+        if (
+          level ===
+          currentPractice.currentLevel
+        ) {
+
+          button.classList.add(
+            "active"
+          );
+
+        }
+
+
+        if (!unlocked) {
+
+          button.classList.add(
+            "locked"
+          );
+
+          button.disabled =
+            true;
+
+        }
+
+
+        let status =
+          "LOCKED";
+
+
+        if (completed) {
+
+          status =
+            "✓ COMPLETE";
+
+        } else if (unlocked) {
+
+          status =
+            level ===
+            currentPractice.currentLevel
+              ? "CURRENT"
+              : "UNLOCKED";
+
+        }
+
+
+        button.innerHTML =
+          "LEVEL " +
+          level +
+          '<span class="level-status">' +
+          status +
+          "</span>";
+
+
+        if (unlocked) {
+
+          button.addEventListener(
+            "click",
+            function() {
+
+                            currentPractice.currentLevel =
+                level;
+
+              renderPractice();
+
+            }
+          );
+
+        }
+
+
+        levelNav.appendChild(
+          button
+        );
+
+      }
+
+    }
+
+
+    /*
+      =====================================================
+      COMMON QUESTION CARD
+      =====================================================
+    */
+
+
+    function createQuestionCard(
+      questionIndex
+    ) {
+
+      const card =
+        document.createElement("div");
+
+
+      card.className =
+        "question";
+
+
+      const number =
+        document.createElement("div");
+
+
+      number.className =
+        "question-number";
+
+
+      number.textContent =
+        "QUESTION " +
+        (questionIndex + 1);
+
+
+      card.appendChild(
+        number
+      );
+
+
+      return card;
+
+    }
+
+
+    /*
+      =====================================================
+      LEVEL 1 RENDERING
+      =====================================================
+    */
+
+
+    function renderLevel1(
+      questions
+    ) {
+
+      questions.forEach(
+        function(question, questionIndex) {
+
+          const card =
+            createQuestionCard(
+              questionIndex
+            );
+
+
+          const sentence =
+            document.createElement("div");
+
+
+          sentence.className =
+            "sentence";
+
+
+          question.tokens.forEach(
+            function(token, tokenIndex) {
+
+              if (
+                question.blankIndexes.includes(
+                  tokenIndex
+                )
+              ) {
+
+                const blank =
+                  document.createElement("span");
+
+
+                blank.className =
+                  "blank";
+
+
+                const blankPosition =
+                  question.blankIndexes.indexOf(
+                    tokenIndex
+                  );
+
+
+                blank.textContent =
+                  question.answers[
+                    blankPosition
+                  ] ||
+                  "________";
+
+
+                sentence.appendChild(
+                  blank
+                );
+
+              } else {
+
+                sentence.appendChild(
+                  document.createTextNode(
+                    token
+                  )
+                );
+
+              }
+
+
+              sentence.appendChild(
+                document.createTextNode(
+                  " "
+                )
+              );
+
+            }
+          );
+
+
+          card.appendChild(
+            sentence
+          );
+
+
+          const choices =
+            document.createElement("div");
+
+
+          choices.className =
+            "choices";
+
+
+          question.choices.forEach(
+            function(choice) {
+
+              const button =
+                document.createElement("button");
+
+
+              button.type =
+                "button";
+
+
+              button.className =
+                "choice";
+
+
+              button.textContent =
+                choice;
+
+
+              if (
+                question.answered
+              ) {
+
+                button.disabled =
+                  true;
+
+
+                if (
+                  normalizeAnswer(choice) ===
+                  normalizeAnswer(
+                    question.correctWords[0]
+                  )
+                ) {
+
+                  button.classList.add(
+                    "correct"
+                  );
+
+                }
+
+              }
+
+
+              if (
+                question.lastAttemptCorrect ===
+                  false &&
+                question.answers[0] &&
+                normalizeAnswer(choice) ===
+                  normalizeAnswer(
+                    question.answers[0]
+                  )
+              ) {
+
+                button.classList.add(
+                  "incorrect"
+                );
+
+              }
+
+
+              button.addEventListener(
+                "click",
+                function() {
+
+                  answerLevel1Question(
+                    questionIndex,
+                    choice
+                  );
+
+                }
+              );
+
+
+              choices.appendChild(
+                button
+              );
+
+            }
+          );
+
+
+          card.appendChild(
+            choices
+          );
+
+
+          const feedback =
+            document.createElement("div");
+
+
+          feedback.className =
+            "feedback";
+
+
+          if (
+            question.correctAnswer
+          ) {
+
+            feedback.textContent =
+              "✓ CORRECT";
+
+          } else if (
+            question.lastAttemptCorrect ===
+              false
+          ) {
+
+            feedback.textContent =
+              "✗ NOT QUITE. Try again.";
+
+          }
+
+
+          card.appendChild(
+            feedback
+          );
+
+
+          questionsContainer.appendChild(
+            card
+          );
+
+        }
+      );
+
+    }
+
+
+    function answerLevel1Question(
+      questionIndex,
+      selected
+    ) {
+
+      const question =
+        currentPractice.levels[1][
+          questionIndex
+        ];
+
+
+      if (
+        question.answered
+      ) {
+
+        return;
+
+      }
+
+
+      question.answers[0] =
+        selected;
+
+
+      const correct =
+        normalizeAnswer(selected) ===
+        normalizeAnswer(
+          question.correctWords[0]
+        );
+
+
+      question.lastAttemptCorrect =
+        correct;
+
+      question.correctAnswer =
+        correct;
+
+      question.answered =
+        correct;
+
+
+      updateUnlockedLevel();
+
+      renderPractice();
+
+    }
+
+
+    /*
+      =====================================================
+      LEVEL 2 RENDERING
+      =====================================================
+    */
+
+
+    function renderLevel2(
+      questions
+    ) {
+
+      questions.forEach(
+        function(question, questionIndex) {
+
+          const card =
+            createQuestionCard(
+              questionIndex
+            );
+
+
+          const sentence =
+            document.createElement("div");
+
+
+          sentence.className =
+            "sentence";
+
+
+          question.tokens.forEach(
+            function(token, tokenIndex) {
+
+              const blankPosition =
+                question.blankIndexes.indexOf(
+                  tokenIndex
+                );
+
+
+              if (
+                blankPosition !== -1
+              ) {
+
+                const blank =
+                  document.createElement("span");
+
+
+                blank.className =
+                  "blank";
+
+
+                blank.textContent =
+                  question.answers[
+                    blankPosition
+                  ] ||
+                  "________";
+
+
+                sentence.appendChild(
+                  blank
+                );
+
+              } else {
+
+                sentence.appendChild(
+                  document.createTextNode(
+                    token
+                  )
+                );
+
+              }
+
+
+              sentence.appendChild(
+                document.createTextNode(
+                  " "
+                )
+              );
+
+            }
+          );
+
+
+          card.appendChild(
+            sentence
+          );
+
+
+          const choices =
+            document.createElement("div");
+
+
+          choices.className =
+            "choices";
+
+
+          question.choices.forEach(
+            function(choice) {
+
+              const button =
+                document.createElement("button");
+
+
+              button.type =
+                "button";
+
+
+              button.className =
+                "choice";
+
+
+              button.textContent =
+                choice;
+
+
+              if (
+                question.answered
+              ) {
+
+                button.disabled =
+                  true;
+
+
+                const isCorrectChoice =
+                  question.correctWords.some(
+                    function(correct) {
+
+                      return (
+                        normalizeAnswer(
+                          choice
+                        ) ===
+                        normalizeAnswer(
+                          correct
+                        )
+                      );
+
+                    }
+                  );
+
+
+                if (
+                  isCorrectChoice
+                ) {
+
+                  button.classList.add(
+                    "correct"
+                  );
+
+                }
+
+              }
+
+
+              button.addEventListener(
+                "click",
+                function() {
+
+                  answerLevel2Question(
+                    questionIndex,
+                    choice
+                  );
+
+                }
+              );
+
+
+              choices.appendChild(
+                button
+              );
+
+            }
+          );
+
+
+          card.appendChild(
+            choices
+          );
+
+
+          const feedback =
+            document.createElement("div");
+
+
+          feedback.className =
+            "feedback";
+
+
+          if (
+            question.correctAnswer
+          ) {
+
+            feedback.textContent =
+              "✓ CORRECT";
+
+          } else if (
+            question.lastAttemptCorrect ===
+              false
+          ) {
+
+            feedback.textContent =
+              "✗ NOT QUITE. Try again.";
+
+          }
+
+
+          card.appendChild(
+            feedback
+          );
+
+
+          questionsContainer.appendChild(
+            card
+          );
+
+        }
+      );
+
+    }
+
+
+    function answerLevel2Question(
+      questionIndex,
+      selected
+    ) {
+
+      const question =
+        currentPractice.levels[2][
+          questionIndex
+        ];
+
+
+      if (
+        question.answered
+      ) {
+
+        return;
+
+      }
+
+
+      const nextBlank =
+        question.answers.findIndex(
+          function(answer) {
+
+            return answer === null;
+
+          }
+        );
+
+
+      if (
+        nextBlank === -1
+      ) {
+
+        return;
+
+      }
+
+
+      question.answers[
+        nextBlank
+      ] =
+        selected;
+
+
+      if (
+        question.answers.every(
+          function(answer) {
+
+            return answer !== null;
+
+          }
+        )
+      ) {
+
+        const isCorrect =
+          question.answers.every(
+            function(answer, index) {
+
+              return (
+                normalizeAnswer(answer) ===
+                normalizeAnswer(
+                  question.correctWords[index]
+                )
+              );
+
+            }
+          );
+
+
+        question.lastAttemptCorrect =
+          isCorrect;
+
+        question.correctAnswer =
+          isCorrect;
+
+        question.answered =
+          isCorrect;
+
+
+        if (
+          !isCorrect
+        ) {
+
+          question.answers =
+            question.answers.map(
+              function() {
+
+                return null;
+
+              }
+            );
+
+        }
+
+
+        updateUnlockedLevel();
+
+        }
+
+
+      renderPractice();
+
+    }
+
+
+    /*
+      =====================================================
+      LEVEL 3 RENDERING
+      =====================================================
+    */
+
+
+    function renderLevel3(
+      questions
+    ) {
+
+      questions.forEach(
+        function(question, questionIndex) {
+
+          const card =
+            createQuestionCard(
+              questionIndex
+            );
+
+
+          const sentence =
+            document.createElement("div");
+
+
+          sentence.className =
+            "sentence";
+
+
+          question.tokens.forEach(
+            function(token, tokenIndex) {
+
+              const blankPosition =
+                question.blankIndexes.indexOf(
+                  tokenIndex
+                );
+
+
+              if (
+                blankPosition !== -1
+              ) {
+
+                const input =
+                  document.createElement("input");
+
+
+                input.type =
+                  "text";
+
+
+                input.className =
+                  "answer-input";
+
+
+                input.placeholder =
+                  "TYPE THE WORD";
+
+
+                input.value =
+                  question.answers[
+                    blankPosition
+                  ] ||
+                  "";
+
+
+                input.disabled =
+                  question.answered;
+
+
+                if (
+                  question.lastAttemptCorrect ===
+                    true
+                ) {
+
+                  input.classList.add(
+                    "correct"
+                  );
+
+                } else if (
+                  question.lastAttemptCorrect ===
+                    false
+                ) {
+
+                  input.classList.add(
+                    "incorrect"
+                  );
+
+                }
+
+
+                input.addEventListener(
+                  "input",
+                  function() {
+
+                    question.answers[
+                      blankPosition
+                    ] =
+                      input.value;
+
+                  }
+                );
+
+
+                sentence.appendChild(
+                  input
+                );
+
+              } else {
+
+                sentence.appendChild(
+                  document.createTextNode(
+                    token
+                  )
+                );
+
+              }
+
+
+              sentence.appendChild(
+                document.createTextNode(
+                  " "
+                )
+              );
+
+            }
+          );
+
+
+          card.appendChild(
+            sentence
+          );
+
+
+          if (
+            !question.answered
+          ) {
+
+            const checkButton =
+              document.createElement("button");
+
+
+            checkButton.type =
+              "button";
+
+
+            checkButton.textContent =
+              "CHECK ANSWER";
+
+
+            checkButton.addEventListener(
+              "click",
+              function() {
+
+                checkLevel3Question(
+                  questionIndex
+                );
+
+              }
+            );
+
+
+            card.appendChild(
+              checkButton
+            );
+
+          }
+
+
+          const feedback =
+            document.createElement("div");
+
+
+          feedback.className =
+            "feedback";
+
+
+          if (
+            question.lastAttemptCorrect ===
+              true
+          ) {
+
+            feedback.textContent =
+              "✓ CORRECT";
+
+          } else if (
+            question.lastAttemptCorrect ===
+              false
+          ) {
+
+            feedback.textContent =
+              "✗ NOT QUITE. Try again.";
+
+          }
+
+
+          card.appendChild(
+            feedback
+          );
+
+
+          questionsContainer.appendChild(
+            card
+          );
+
+        }
+      );
+
+    }
+
+
+    function checkLevel3Question(
+      questionIndex
+    ) {
+
+      const question =
+        currentPractice.levels[3][
+          questionIndex
+        ];
+
+
+      if (
+        question.answered
+      ) {
+
+        return;
+
+      }
+
+
+      const complete =
+        question.answers.every(
+          function(answer) {
+
+            return (
+              answer &&
+              answer.trim()
+            );
+
+          }
+        );
+
+
+      if (!complete) {
+
+        savedMessage.textContent =
+          "Complete all the blanks before checking.";
+
+        return;
+
+      }
+
+
+      const isCorrect =
+        question.answers.every(
+          function(answer, index) {
+
+            return (
+              normalizeAnswer(answer) ===
+              normalizeAnswer(
+                question.correctWords[index]
+              )
+            );
+
+          }
+        );
+
+
+      question.lastAttemptCorrect =
+        isCorrect;
+
+      question.correctAnswer =
+        isCorrect;
+
+      question.answered =
+        isCorrect;
+
+
+      if (
+        !isCorrect
+      ) {
+
+        /*
+          Keep the student's answers visible
+          so they can see what they entered.
+        */
+
+      }
+
+
+      updateUnlockedLevel();
+
+      renderPractice();
+
+    }
+
+
+    /*
+      =====================================================
+      LEVEL 4 RENDERING
+      =====================================================
+    */
+
+
+    function renderLevel4(
+      questions
+    ) {
+
+      questions.forEach(
+        function(question, questionIndex) {
+
+          const card =
+            createQuestionCard(
+              questionIndex
+            );
+
+
+          const prompt =
+            document.createElement("div");
+
+
+          prompt.className =
+            "small-note";
+
+
+          prompt.textContent =
+            "THESE PARTS OF YOUR SCRIPT ARE SCRAMBLED. DRAG THEM INTO THE CORRECT ORDER.";
+
+
+          card.appendChild(
+            prompt
+          );
+
+
+          const list =
+            document.createElement("div");
+
+
+          list.className =
+            "level4-order-list";
+
+
+          let draggedItem =
+            null;
+
+
+          question.currentOrder =
+            question.currentOrder ||
+            question.shuffledItems.map(
+              function(item) {
+                return item.id;
+              }
+            );
+
+
+          function renderOrder() {
+
+            list.innerHTML =
+              "";
+
+
+            question.currentOrder.forEach(
+              function(itemId, position) {
+
+                const item =
+                  question.shuffledItems.find(
+                    function(entry) {
+                      return entry.id === itemId;
+                    }
+                  );
+
+
+                if (!item) {
+                  return;
+                }
+
+
+                const row =
+                  document.createElement("div");
+
+
+                row.className =
+                  "level4-order-item";
+
+
+                row.draggable =
+                  !question.answered;
+
+
+                row.dataset.id =
+                  item.id;
+
+
+                const number =
+                  document.createElement("span");
+
+
+                number.className =
+                  "level4-number";
+
+
+                number.textContent =
+                  String(position + 1);
+
+
+                const sentence =
+                  document.createElement("span");
+
+
+                sentence.className =
+                  "level4-sentence";
+
+
+                sentence.textContent =
+                  item.sentence;
+
+
+                row.appendChild(
+                  number
+                );
+
+
+                row.appendChild(
+                  sentence
+                );
+
+
+                if (
+                  !question.answered
+                ) {
+
+                  row.addEventListener(
+                    "dragstart",
+                    function() {
+
+                      draggedItem =
+                        item.id;
+
+                      row.classList.add(
+                        "dragging"
+                      );
+
+                    }
+                  );
+
+
+                  row.addEventListener(
+                    "dragend",
+                    function() {
+
+                      draggedItem =
+                        null;
+
+                      row.classList.remove(
+                        "dragging"
+                      );
+
+                    }
+                  );
+
+
+                  row.addEventListener(
+                    "dragover",
+                    function(event) {
+
+                      event.preventDefault();
+
+                    }
+                  );
+
+
+                  row.addEventListener(
+                    "drop",
+                    function(event) {
+
+                      event.preventDefault();
+
+
+                      if (
+                        !draggedItem ||
+                        draggedItem ===
+                          item.id
+                      ) {
+
+                        return;
+
+                      }
+
+
+                      const fromIndex =
+                        question.currentOrder.indexOf(
+                          draggedItem
+                        );
+
+
+                      const toIndex =
+                        question.currentOrder.indexOf(
+                          item.id
+                        );
+
+
+                      if (
+                        fromIndex === -1 ||
+                        toIndex === -1
+                      ) {
+
+                        return;
+
+                      }
+
+
+                      question.currentOrder.splice(
+                        fromIndex,
+                        1
+                      );
+
+
+                      question.currentOrder.splice(
+                        toIndex,
+                        0,
+                        draggedItem
+                      );
+
+
+                      renderOrder();
+
+                    }
+                  );
+
+                }
+
+
+                list.appendChild(
+                  row
+                );
+
+              }
+            );
+
+          }
+
+
+          renderOrder();
+
+
+          card.appendChild(
+            list
+          );
+
+
+          if (
+            !question.answered
+          ) {
+
+            const checkButton =
+              document.createElement("button");
+
+
+            checkButton.type =
+              "button";
+
+
+            checkButton.textContent =
+              "CHECK ORDER";
+
+
+            checkButton.addEventListener(
+              "click",
+              function() {
+
+                checkLevel4Question(
+                  questionIndex
+                );
+
+              }
+            );
+
+
+            card.appendChild(
+              checkButton
+            );
+
+          }
+
+
+          const feedback =
+            document.createElement("div");
+
+
+          feedback.className =
+            "feedback";
+
+
+          if (
+            question.lastAttemptCorrect ===
+              true
+          ) {
+
+            feedback.textContent =
+              "✓ GREAT JOB! TRY AGAIN TO PRACTICE A NEW PART OF YOUR SCRIPT!";
+
+          } else if (
+            question.lastAttemptCorrect ===
+              false
+          ) {
+
+            feedback.textContent =
+              "✗ NOT QUITE. CHECK THE ORDER AND TRY AGAIN.";
+
+          }
+
+
+          card.appendChild(
+            feedback
+          );
+
+
+          questionsContainer.appendChild(
+            card
+          );
+
+        }
+      );
+
+    }
+
+
+    function checkLevel4Question(
+      questionIndex
+    ) {
+
+      const question =
+        currentPractice.levels[4][
+          questionIndex
+        ];
+
+
+      if (
+        question.answered
+      ) {
+
+        return;
+
+      }
+
+
+      const currentOrder =
+        question.currentOrder || [];
+
+
+      const currentItems =
+        currentOrder.map(
+          function(itemId) {
+
+            return question.shuffledItems.find(
+              function(item) {
+                return item.id === itemId;
+              }
+            );
+
+          }
+        );
+
+
+      const isCorrect =
+        currentItems.length ===
+          question.items.length &&
+        currentItems.every(
+          function(item, index) {
+
+            return (
+              item &&
+              item.originalIndex ===
+              question.items[index].originalIndex
+            );
+
+          }
+        );
+
+
+      question.lastAttemptCorrect =
+        isCorrect;
+
+
+      question.correctAnswer =
+        isCorrect;
+
+
+      if (
+        isCorrect
+      ) {
+
+        question.answered =
+          true;
+
+      }
+
+
+      updateUnlockedLevel();
+
+      renderPractice();
+
+    }
+
+
+
+    /*
+      =====================================================
+      RENDER PRACTICE
+      =====================================================
+    */
+
 
     function renderPractice() {
 
       if (
-        !currentPractice ||
-        !currentPractice.questions ||
-        currentPractice.questions.length === 0
+        !currentPractice
+      ) {
+
+        return;
+
+      }
+
+
+      updateUnlockedLevel();
+
+
+      const currentLevel =
+        currentPractice.currentLevel;
+
+
+      const questions =
+        currentPractice.levels[
+          currentLevel
+        ];
+
+
+      if (
+        !questions ||
+        questions.length === 0
       ) {
 
         return;
@@ -862,280 +3291,132 @@
         currentPractice.script;
 
 
+      levelTitle.textContent =
+        LEVELS[
+          currentLevel
+        ].title;
+
+
+      levelInstructions.textContent =
+        LEVELS[
+          currentLevel
+        ].instructions;
+
+
       questionsContainer.innerHTML =
         "";
 
 
-      currentPractice.questions.forEach(
-        function(question, questionIndex) {
-
-          const questionCard =
-            document.createElement("div");
-
-          questionCard.className =
-            "question";
-
-
-          const questionNumber =
-            document.createElement("div");
-
-          questionNumber.className =
-            "question-number";
-
-          questionNumber.textContent =
-            "QUESTION " +
-            (questionIndex + 1);
-
-
-          questionCard.appendChild(
-            questionNumber
-          );
-
-
-          const sentence =
-            document.createElement("div");
-
-          sentence.className =
-            "sentence";
-
-
-          question.tokens.forEach(
-            function(token, tokenIndex) {
-
-              if (
-                tokenIndex ===
-                question.blankIndex
-              ) {
-
-                const blank =
-                  document.createElement("span");
-
-                blank.className =
-                  "blank";
-
-                blank.textContent =
-                  question.selected ||
-                  "________";
-
-                blank.dataset.question =
-                  questionIndex;
-
-                sentence.appendChild(
-                  blank
-                );
-
-              } else {
-
-                sentence.appendChild(
-                  document.createTextNode(
-                    token
-                  )
-                );
-
-              }
-
-
-              sentence.appendChild(
-                document.createTextNode(" ")
-              );
-
-            }
-          );
-
-
-          questionCard.appendChild(
-            sentence
-          );
-
-
-          const choices =
-            document.createElement("div");
-
-          choices.className =
-            "choices";
-
-
-          question.choices.forEach(
-            function(choice) {
-
-              const button =
-                document.createElement("button");
-
-              button.type =
-                "button";
-
-              button.className =
-                "choice";
-
-              button.textContent =
-                choice;
-
-
-              if (
-                question.answered
-              ) {
-
-                button.disabled =
-                  true;
-
-
-                if (
-                  choice.toLowerCase() ===
-                  question.correct.toLowerCase()
-                ) {
-
-                  button.classList.add(
-                    "correct"
-                  );
-
-                }
-
-
-                if (
-                  choice.toLowerCase() ===
-                  String(
-                    question.selected
-                  ).toLowerCase() &&
-                  !question.correctAnswer
-                ) {
-
-                  button.classList.add(
-                    "incorrect"
-                  );
-
-                }
-
-              }
-
-
-              button.addEventListener(
-                "click",
-                function() {
-
-                  answerQuestion(
-                    questionIndex,
-                    choice
-                  );
-
-                }
-              );
-
-
-              choices.appendChild(
-                button
-              );
-
-            }
-          );
-
-
-          questionCard.appendChild(
-            choices
-          );
-
-
-          const feedback =
-            document.createElement("div");
-
-          feedback.className =
-            "feedback";
-
-
-          if (
-            question.answered
-          ) {
-
-            if (
-              question.correctAnswer
-            ) {
-
-              feedback.textContent =
-                "✓ CORRECT";
-
-            } else {
-
-              feedback.textContent =
-                "✗ The correct answer is " +
-                question.correct;
-
-            }
-
-          }
-
-
-          questionCard.appendChild(
-            feedback
-          );
-
-
-          questionsContainer.appendChild(
-            questionCard
-          );
-
-        }
+      completionBox.classList.add(
+        "hidden"
       );
+
+
+      renderLevelNavigation();
+
+
+      if (
+        currentLevel === 1
+      ) {
+
+        renderLevel1(
+          questions
+        );
+
+      } else if (
+        currentLevel === 2
+      ) {
+
+        renderLevel2(
+          questions
+        );
+
+      } else if (
+        currentLevel === 3
+      ) {
+
+        renderLevel3(
+          questions
+        );
+
+      } else if (
+        currentLevel === 4
+      ) {
+
+        renderLevel4(
+          questions
+        );
+
+      }
 
 
       updateProgress();
 
-    }
-
-
-    /*
-      =====================================================
-      ANSWER
-      =====================================================
-    */
-
-    function answerQuestion(
-      questionIndex,
-      selected
-    ) {
-
-      const question =
-        currentPractice.questions[
-          questionIndex
-        ];
-
 
       if (
-        question.answered
+        isLevelComplete(
+          currentLevel
+        )
       ) {
-        return;
+
+        showLevelCompletion(
+          currentLevel
+        );
+
       }
 
 
-      question.answered =
-        true;
+      if (
+        currentLevel < 4 &&
+        currentPractice.unlockedLevel >
+          currentLevel
+      ) {
 
-      question.selected =
-        selected;
+        nextLevelButton.classList.remove(
+          "hidden"
+        );
 
+      } else {
 
-      question.correctAnswer =
-        selected.toLowerCase() ===
-        question.correct.toLowerCase();
+        nextLevelButton.classList.add(
+          "hidden"
+        );
 
-
-      renderPractice();
+      }
 
     }
 
 
     /*
       =====================================================
-      PROGRESS
+      PROGRESS DISPLAY
       =====================================================
     */
 
+
     function updateProgress() {
 
-      const total =
-        currentPractice.questions.length;
+      if (
+        !currentPractice
+      ) {
+
+        return;
+
+      }
+
+
+      const level =
+        currentPractice.currentLevel;
+
+
+      const questions =
+        currentPractice.levels[
+          level
+        ];
 
 
       const answered =
-        currentPractice.questions.filter(
+        questions.filter(
           function(question) {
 
             return question.answered;
@@ -1145,7 +3426,7 @@
 
 
       const correct =
-        currentPractice.questions.filter(
+        questions.filter(
           function(question) {
 
             return question.correctAnswer;
@@ -1158,93 +3439,84 @@
         "PROGRESS: " +
         answered +
         " / " +
-        total +
+        questions.length +
         "     |     SCORE: " +
         correct +
         " / " +
-        total;
+        questions.length;
 
     }
 
 
     /*
       =====================================================
-      SAVE
+      COMPLETION MESSAGE
       =====================================================
     */
 
-    function saveProgress() {
 
-      if (
-        !currentPractice
-      ) {
-        return;
-      }
+    function showLevelCompletion(
+      level
+    ) {
 
-
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(
-          currentPractice
-        )
+      completionBox.classList.remove(
+        "hidden"
       );
 
 
-      savedMessage.textContent =
-        "Progress saved on this device.";
+      tryAgainButton.classList.remove(
+        "hidden"
+      );
+
+
+      completionBox.innerHTML =
+        "";
+
+
+      const heading =
+        document.createElement("h3");
+
+
+      heading.textContent =
+        level < 4
+          ? "LEVEL " + level + " COMPLETE!"
+          : "YOU COMPLETED ALL 4 LEVELS!";
+
+
+      completionBox.appendChild(
+        heading
+      );
+
+
+      const message =
+        document.createElement("p");
+
+
+      message.textContent =
+        level < 4
+          ? "Great job! You completed this level."
+          : "You finished the complete practice for this script.";
+
+
+      completionBox.appendChild(
+        message
+      );
+
 
     }
 
 
-    /*
-      =====================================================
-      LOAD SAVED PROGRESS
-      =====================================================
-    */
-
-    function loadSavedProgress() {
-
-      const saved =
-        localStorage.getItem(
-          STORAGE_KEY
-        );
 
 
-      if (!saved) {
 
-        savedMessage.textContent =
-          "There is no saved practice yet.";
+    tryAgainButton.addEventListener(
+      "click",
+      function() {
 
-        return;
+        tryAgainWithNewPracticeSet();
 
       }
-
-
-      try {
-
-        currentPractice =
-          JSON.parse(saved);
-
-
-        renderPractice();
-
-
-        savedMessage.textContent =
-          "Saved practice loaded.";
-
-      } catch (error) {
-
-        localStorage.removeItem(
-          STORAGE_KEY
-        );
-
-
-        savedMessage.textContent =
-          "The saved practice could not be loaded.";
-
-      }
-
-    }
+    );
 
 
     /*
@@ -1252,6 +3524,7 @@
       GENERATE
       =====================================================
     */
+
 
     generateButton.addEventListener(
       "click",
@@ -1271,15 +3544,13 @@
         }
 
 
-        const questions =
-          generateQuestions(
+        const newPractice =
+          createPractice(
             script
           );
 
 
-        if (
-          questions.length === 0
-        ) {
+        if (!newPractice) {
 
           savedMessage.textContent =
             "We could not create practice questions from this script. Try adding complete sentences.";
@@ -1289,25 +3560,15 @@
         }
 
 
-        currentPractice = {
-
-          script:
-            script,
-
-          questions:
-            questions,
-
-          createdAt:
-            new Date().toISOString()
-
-        };
+        currentPractice =
+          newPractice;
 
 
-        renderPractice();
+          renderPractice();
 
 
         savedMessage.textContent =
-          "Practice generated.";
+          "Practice generated. Your four levels are ready.";
 
       }
     );
@@ -1315,18 +3576,10 @@
 
     /*
       =====================================================
-      CONTINUE
+      CONTINUE SAVED PRACTICE
       =====================================================
     */
 
-    continueButton.addEventListener(
-      "click",
-      function() {
-
-        loadSavedProgress();
-
-      }
-    );
 
 
     /*
@@ -1335,63 +3588,45 @@
       =====================================================
     */
 
-    saveButton.addEventListener(
-      "click",
-      function() {
-
-        saveProgress();
-
-      }
-    );
 
 
     /*
       =====================================================
-      START OVER
+      NEXT LEVEL
       =====================================================
     */
 
-    restartButton.addEventListener(
+
+    nextLevelButton.addEventListener(
       "click",
       function() {
 
         if (
           !currentPractice
         ) {
+
           return;
+
         }
 
 
-        const confirmed =
-          window.confirm(
-            "Start this practice again? Your current answers will be cleared."
-          );
+        const level =
+          currentPractice.currentLevel;
 
 
-        if (!confirmed) {
-          return;
+        if (
+          level < 4 &&
+          currentPractice.unlockedLevel >=
+            level + 1
+        ) {
+
+          currentPractice.currentLevel =
+            level + 1;
+
+
+              renderPractice();
+
         }
-
-
-        const newQuestions =
-          generateQuestions(
-            currentPractice.script
-          );
-
-
-        currentPractice.questions =
-          newQuestions;
-
-
-        currentPractice.createdAt =
-          new Date().toISOString();
-
-
-        renderPractice();
-
-
-        savedMessage.textContent =
-          "Practice restarted. Save when you want to keep your progress.";
 
       }
     );
@@ -1399,14 +3634,45 @@
 
     /*
       =====================================================
-      INITIAL MESSAGE
+      TRY AGAIN
       =====================================================
     */
 
+
+    /*
+      =====================================================
+      AUTO-SAVE
+      =====================================================
+    */
+
+
+    window.addEventListener(
+      "beforeunload",
+      function() {
+
+        if (
+          currentPractice
+        ) {
+
+            }
+
+      }
+    );
+
+
+    /*
+      =====================================================
+      INITIAL STATE
+      =====================================================
+    */
+
+
+    const existingSaved =
+      loadStoredPractice();
+
+
     if (
-      localStorage.getItem(
-        STORAGE_KEY
-      )
+      existingSaved
     ) {
 
       savedMessage.textContent =
